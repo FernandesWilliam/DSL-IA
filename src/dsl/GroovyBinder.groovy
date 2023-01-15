@@ -15,7 +15,6 @@ class GroovyBinder extends Binding {
     }
 
     public Object getVariable(String name) {
-
         return super.getVariable(name)
     }
 
