@@ -16,8 +16,9 @@ dataset[~((dataset < (Q1 - 1.5 * IQR)) | (dataset > (Q3 + 1.5 * IQR))).any(axis 
 X,y = dataset.drop(['label'], axis = 1), dataset['label']
 X_train, X_test, y_train, y_test=train_test_split(X, y,test_size=70,random_state=45)
 # MinMax TRANSFORMATION
-minMax02 = MinMaxScaler((feature_range=(0,4),clip=false,copy=true)
-minMax01 = MinMaxScaler((feature_range=(0,1),clip=false,copy=true)
+minMax02 = MinMaxScaler(feature_range=(0,4),clip=False,copy=True)
+minMax01 = MinMaxScaler(feature_range=(0,1),clip=False,copy=True)
 # PCA TRANSFORMATION
 pca55 = PCA(n_components=0.5)
 pca51 = PCA(n_components=0.3)
+

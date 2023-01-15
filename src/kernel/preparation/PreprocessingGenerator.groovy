@@ -11,8 +11,6 @@ class PreprocessingGenerator implements Generator {
     def preprocessingMethods = [
             "notNull"       : { dataset, v -> "${dataset}.dropna()" },
             "removeOutliers": { dataset, v -> removeOutliers(dataset, v) }
-
-
     ]
 
     PreprocessingGenerator(Preprocessing preprocessing) {

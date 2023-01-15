@@ -1,18 +1,21 @@
 preparation {
     fetch "../input/digit-recognizer/train.csv"
+
+    // train et test
+    //  si il existe kick fetch et generateDataset
     generateDataset {
         seed 45
         training_size 70
     }
     preprocessing {
-        notNull()
+        notNull() //verif sur les arguments qu'on mette pas
         removeOutliers 0.01, 0.8
-        drop "colum1"
+        drop "colum1" // a faire
     }
 }
 
 transformation {
-    normalizer 255
+    normalizer 255 // a faire
 
     pca {
         pca55 {
@@ -32,6 +35,10 @@ transformation {
             copy false
         }
     }
+
+
+    //standardScaler a ajouter
+
 }
 
 training {
@@ -86,9 +93,11 @@ training {
     }
 }
 
-comparison {
+comparison { // a faire
+    // faire gaff au error
     compare rndForest1, gauss1 with accuracy weight 10 and time weight 3
 }
+
 
 
 export "first"

@@ -31,7 +31,7 @@ class TransformationGenerator implements Generator {
     def generateMinMax(MinMaxMapper minMaxMapper) {
         stringBuilder.append("# MinMax TRANSFORMATION").append(StringUtils.lineFeed())
         for (def entry in minMaxMapper.map.entrySet()) {
-            stringBuilder.append("${entry.key} = MinMaxScaler((feature_range=(${entry.value.feature_range.join(',')}),clip=${entry.value.clip},copy=${entry.value.copy})")
+            stringBuilder.append("${entry.key} = MinMaxScaler(feature_range=(${entry.value.feature_range.join(',')}),clip=${entry.value.clip.toString().capitalize()},copy=${entry.value.copy.toString().capitalize()})")
                     .append(StringUtils.lineFeed())
 
         }
