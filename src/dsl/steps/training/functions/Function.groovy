@@ -1,8 +1,10 @@
 package dsl.steps.training.functions
 
+import dsl.steps.DSLThrower
+
 import java.lang.reflect.Method
 
-class Function {
+class Function implements DSLThrower {
 
     String function;
 
@@ -11,24 +13,27 @@ class Function {
 
         Method method = Function.methods.find { method -> method.name == name }
         if (!method)
-            throw new Exception("Je ne connais pas la fonction ${name} suivante")
+            reject("${name} function doesn't exist or is not support by the kernel")
         invokeMethod(name, args);
 
 
     }
 
 
-    def randint(min, max) {
-        this.function = "randing(${min},${max})"
+    def randint(int min, int max) {
+        if (max < min) reject("First argument should be lower than second one")
+        this.function = "sp_randint(${min},${max})"
 
     }
 
 
-    def stratified(split, shuffle) {
-        this.function = "ewff"
+    def stratified(int split, boolean shuffle) {
+        if (split <= 1)
+            reject("Stratified fold should be greater or equals than 2")
+        this.function = "StratifiedKFold(n_splits=$split, shuffle = ${shuffle.toString().capitalize()})"
     }
 
-    def logspace(a, b, c) {
-        this.function = ",rbek"
+    def logspace(int a, int b, int c) {
+        this.function = "np.logspace($a, $b, $c)"
     }
 }

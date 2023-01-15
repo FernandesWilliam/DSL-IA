@@ -35,8 +35,11 @@ class Preprocessing implements DSLThrower {
         methods.put("removeOutliers", [q1, q3, cols.length === 0 ? "*" : cols])
     }
 
-    void drop(columnName) {
-
+    void drop(String columnName) {
+        if(columnName.isEmpty()) {
+            reject("columnName is empty")
+        }
+        methods.put("drop", columnName)
     }
 
 }

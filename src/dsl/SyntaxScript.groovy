@@ -1,11 +1,12 @@
 package dsl
 
+import dsl.steps.DSLThrower
 import dsl.steps.comparaison.ComparisonStep
 import dsl.steps.preparation.PreparationStep
 import dsl.steps.training.TrainingStep
 import dsl.steps.transformation.TransformationStep
 
-abstract class SyntaxScript extends Script {
+abstract class SyntaxScript extends Script implements DSLThrower{
 
     def preparation(preparationClosure) {
         PreparationStep preparationStep = new PreparationStep()
@@ -14,6 +15,12 @@ abstract class SyntaxScript extends Script {
     }
 
     def transformation(transformationClosure) {
+        if(this.model.preparationStep.trainPath != null && this.model.preparationStep.testPath == null) {
+            reject("test data not defined in this scope")
+        }
+        if(this.model.preparationStep.trainPath == null && this.model.preparationStep.testPath == null && this.model.preparationStep.filePath == null) {
+            reject("no data files defined in this scope")
+        }
         TransformationStep transformationStep = new TransformationStep()
         ClosureExtractor.extract(transformationClosure, transformationStep)
         this.model.transformationStep = transformationStep;

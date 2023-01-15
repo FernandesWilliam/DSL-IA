@@ -1,12 +1,7 @@
 preparation {
-    fetch "../input/digit-recognizer/train.csv"
+    train "../input/digit-recognizer/train1.csv"
+    test "../input/digit-recognizer/test.csv"
 
-    // train et test
-    //  si il existe kick fetch et generateDataset
-    generateDataset {
-        seed 45
-        training_size 70
-    }
     preprocessing {
         notNull() //verif sur les arguments qu'on mette pas
         removeOutliers 0.01, 0.8
@@ -15,7 +10,7 @@ preparation {
 }
 
 transformation {
-    normalizer 255 // a faire
+    normalizer 255 // a faire tatana
 
     pca {
         pca55 {
@@ -38,6 +33,15 @@ transformation {
 
 
     //standardScaler a ajouter
+    standardScaler {
+        standardScaler01 {
+            copy false
+        }
+        standardScaler02 {
+            copy false
+            with_mean false
+        }
+    }
 
 }
 
@@ -53,8 +57,16 @@ training {
                 clf_knn__algorithm 'auto'
             }
             transformations minMax02, pca55
-
-
+        }
+        knn2 {
+            kfold stratified(2, true)
+            scoring accuracy, time
+            cv 5
+            distributionParams {
+                clf_knn__n_neighbors randint(1, 11)
+                clf_knn__algorithm 'auto'
+            }
+            transformations minMax02, pca55
         }
     }
     //Gaussian Classifier

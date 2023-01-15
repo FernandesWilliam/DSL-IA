@@ -9,6 +9,8 @@ class TransformationStep implements DSLThrower {
 
     MinMaxMapper minMaxMapper;
 
+    StandardScalerMapper standardScalerMapper;
+
     float normalize = 0;
 
     void pca(pcaClosure) {
@@ -32,6 +34,13 @@ class TransformationStep implements DSLThrower {
             this.reject("You already defined minmax property.Can't be append twice")
         minMaxMapper = new MinMaxMapper();
         ClosureExtractor.extract(minMaxClosure, minMaxMapper)
+    }
+
+    void standardScaler(standardScalerClosure){
+        if (standardScalerMapper != null)
+            this.reject("You already defined standardScaler property.Can't be append twice");
+        standardScalerMapper = new StandardScalerMapper();
+        ClosureExtractor.extract(standardScalerClosure, standardScalerMapper);
     }
 
 

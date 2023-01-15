@@ -7,13 +7,16 @@ import kernel.StringUtils
 class PreprocessingGenerator implements Generator {
 
     StringBuilder preprocessingBuilder;
+    Boolean mergedData;
 
     def preprocessingMethods = [
             "notNull"       : { dataset, v -> "${dataset}.dropna()" },
-            "removeOutliers": { dataset, v -> removeOutliers(dataset, v) }
+            "removeOutliers": { dataset, v -> removeOutliers(dataset, v) },
+            "drop"          : { dataSet, columnName -> "${dataSet}.drop(['${columnName}'], axis = 1)"}
     ]
 
-    PreprocessingGenerator(Preprocessing preprocessing) {
+    PreprocessingGenerator(Preprocessing preprocessing, Boolean mergedData) {
+        this.mergedData = mergedData;
         preprocessingBuilder = new StringBuilder();
         preprocessing.methods.entrySet();
         applyProcessingOnDataSet(preprocessing.methods)
@@ -58,15 +61,21 @@ class PreprocessingGenerator implements Generator {
 
     def applyProcessingOnDataSet(methods) {
         def entrySet = methods.entrySet()
-        def dataSetName = "dataset"
-        preprocessingBuilder.append("#Preprocessing Phase :")
-                .append(StringUtils.lineFeed())
+        def dataSetsName = []
+        if(mergedData) {
+            dataSetsName = ["dataset"]
+        }else {
+            dataSetsName = ["dataTrainSet", "dataTestSet"]
+        }
+        preprocessingBuilder.append("###### ---- PREPROCESSING PHASE ---- ######")
+                .append(StringUtils.lineFeed(2))
         for (entry in entrySet) {
-            preprocessingBuilder
-                    .append("#preprocess ${entry.key} :")
-                    .append(StringUtils.lineFeed())
-                    .append(preprocessingMethods[(String) entry.key](dataSetName, entry.value))
-                    .append(StringUtils.lineFeed())
+            preprocessingBuilder.append("## PREPROCESS : ${entry.key.toUpperCase()} ").append(StringUtils.lineFeed())
+            for(dataSet in dataSetsName){
+                preprocessingBuilder
+                        .append(preprocessingMethods[(String) entry.key](dataSet, entry.value))
+                        .append(StringUtils.lineFeed(2))
+            }
         }
     }
 
