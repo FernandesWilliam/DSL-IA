@@ -1,0 +1,19 @@
+<program> ::= <preparation> <EOL> <transformation> <EOL> <training> <comparison> "export" <string>
+
+<preparation> ::= "preparation {" <EOL> <train> <EOL> <test> <EOL> <preprocessing> "}"
+<preprocessing> ::= "preprocessing {" <preprocessing-functions> "}"<EOL>
+<preprocessing-functions> ::= <preprocessing-function> <EOL> <preprocessing-functions> | <preprocessing-function> <EOL>
+<preprocessing-function> ::= notNull() | removeOutliers <float>, <float> | drop <string>
+
+<train> ::= train <PATH>
+<test> ::= test <PATH>
+<PATH> ::= ^(.+)\/([^\/]+)$
+
+<transformation> ::= <transformation-block> <EOL> |
+<transformation-block> ::= <minmax-block> | <standardscaler-block> | <pca-block>
+
+
+<pre-processing> ::= <expression> <EOL> | <expression>
+<standard> ::= <expression> <EOL> | <expression>
+<expression> ::= <name> <value>
+<value> ::= <float> | <boolean>
