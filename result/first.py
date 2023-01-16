@@ -27,9 +27,9 @@ IQR = Q3 - Q1
 dataTestSet[~((dataTestSet < (Q1 - 1.5 * IQR)) | (dataTestSet > (Q3 + 1.5 * IQR))).any(axis = 1)]
 
 ## PREPROCESS : DROP 
-dataTrainSet.drop(['colum1'], axis = 1)
+dataTrainSet.drop(['column1'], axis = 1)
 
-dataTestSet.drop(['colum1'], axis = 1)
+dataTestSet.drop(['column1'], axis = 1)
 
 ##DATASET SPLIT
 X_train, y_train = dataTrainSet.drop(['label'], axis = 1), dataTrainSet['label']

@@ -9,8 +9,20 @@
 <test> ::= test <PATH>
 <PATH> ::= ^(.+)\/([^\/]+)$
 
-<transformation> ::= <transformation-block> <EOL> |
-<transformation-block> ::= <minmax-block> | <standardscaler-block> | <pca-block>
+
+<transformation-block> ::= "transformation {" <EOL> <transformation-block> "}" <EOL>
+<transformations> ::= <minmax-block> <standardscaler-block> <pca-block>
+<minmax-block> ::= <minmax> <minmax-block> | epsilon
+<minmax> ::= "minMax" <ID> "{" "}"
+<minmax-params> ::= <feature_range> <copy>"feature_range ("<integer>", " <integer>")" | epsilon
+<minmax-param-feature_range> ::= "feature_range ("<integer>", " <integer>")" | epsilon
+<minmax-param-copy> ::= "copy " <boolean>  | epsilon
+
+
+<standardscaler-block> ::= <standardscaler> | epsilon
+
+<pca-block> ::= <pca> <pca-block> | epsilon
+<pca> ::= "pca" <ID> "{ n_components" <float> "}"
 
 
 <pre-processing> ::= <expression> <EOL> | <expression>

@@ -5,13 +5,12 @@ preparation {
     preprocessing {
         notNull() //verif sur les arguments qu'on mette pas
         removeOutliers 0.01, 0.8
-        drop "colum1" // a faire
+        drop "column1" // a faire
     }
 }
 
 transformation {
     normalizer 255 // a faire tatana
-
     pca {
         pca55 {
             n_components 0.5
@@ -23,7 +22,7 @@ transformation {
     }
     minmax {
         minMax02 {
-            feature_range(0, 4)
+            feature_range (0, 4)
             copy false
         }
         minMax01 {
@@ -51,6 +50,7 @@ training {
         knn1 {
             kfold stratified(2, true)
             scoring accuracy, time
+            fzfz aa, zz
             cv 5
             distributionParams {
                 clf_knn__n_neighbors randint(1, 11)
@@ -65,6 +65,7 @@ training {
             distributionParams {
                 clf_knn__n_neighbors randint(1, 11)
                 clf_knn__algorithm 'auto'
+
             }
             transformations minMax02, pca55
         }
@@ -79,12 +80,12 @@ training {
                 clf_nb__var_smoothing logspace(-9, 0, 5)
             }
             transformations minMax02, pca55
+            fzfez zaz, aaa
         }
     }
     // Random Classifier
     rndForest {
         rndForest1 {
-            n_estimators 100
             class_weight 'balanced'
 
             kfold stratified(2, true)
@@ -95,6 +96,7 @@ training {
                 clf__max_features randint(1, 11)
                 clf__min_samples_split randint(2, 11)
                 clf__min_samples_leaf randint(1, 11)
+                clf_nb__var_smoothing logspace(-9, 0, 5)
 
             }
             transformations pca55
