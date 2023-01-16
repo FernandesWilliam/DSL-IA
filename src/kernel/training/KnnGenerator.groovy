@@ -4,6 +4,7 @@ import dsl.steps.training.classifier.knn.KnnClassifier
 import dsl.steps.training.functions.Function
 import kernel.Generator
 import kernel.StringUtils
+import kernel.notebook.BlockGenerator
 
 class KnnGenerator implements Generator {
     //  kfold stratified(2, true)
@@ -39,7 +40,7 @@ class KnnGenerator implements Generator {
         def hyperParams = []
         for (def entry in knnClassifier.distributionParameters.properties.entrySet()) {
             if (entry.key != "class")
-                hyperParams << "\"${entry.key}\": ${entry.value instanceof Function ? entry.value.function : entry.value}"
+                hyperParams << "\"${entry.key}\": ${entry.value instanceof Function ? entry.value.function : entry.value}" + BlockGenerator.NEWLINE
         }
 
         def pipeName = "pipe_${name}"
@@ -50,17 +51,17 @@ class KnnGenerator implements Generator {
 
         stringBuilder = new StringBuilder()
                 .append("$kfoldName=${knnClassifier.kfold.function}")
-                .append(StringUtils.lineFeed())
+                .append(BlockGenerator.NEWLINE)
                 .append("$pipeName= Pipeline([${transform.join(',')} ,('clf_knn', KNeighborsClassifier())])")
-                .append(StringUtils.lineFeed())
-                .append("$distributionName={${hyperParams.join(",")} }")
-                .append(StringUtils.lineFeed())
+                .append(BlockGenerator.NEWLINE)
+                .append("$distributionName={"+BlockGenerator.NEWLINE+"${hyperParams.join(",")} }")
+                .append(BlockGenerator.NEWLINE)
                 .append("$rsName =RandomizedSearchCV(estimator= $pipeName," +
-                        "param_distributions = $distributionName, " +
-                        "cv =$kfoldName," +
-                        "  verbose = 2, " +
+                        "param_distributions = $distributionName, " + BlockGenerator.NEWLINE +
+                        "cv =$kfoldName," + BlockGenerator.NEWLINE +
+                        "  verbose = 2, " + BlockGenerator.NEWLINE +
                         "n_jobs = -1, " + "n_iter = 5)")
-                .append(StringUtils.lineFeed())
+                .append(BlockGenerator.NEWLINE)
                 .append("scores_$name = cross_validate(rsName, Xtrain ,y_train,cv=${knnClassifier.cv},scoring={${scoring}}) ")
     }
 

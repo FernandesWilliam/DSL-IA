@@ -15,7 +15,7 @@ class PythonModel {
     TrainingStep trainingStep;
     ComparisonStep comparisonStep;
     def build(exportFilePath) {
-        def file = new File("../result/" + exportFilePath + ".py")
+        def file = new File("../result/" + exportFilePath + ".json")
 
         def generator = new PythonGenerator(preparationStep,
                 transformationStep,

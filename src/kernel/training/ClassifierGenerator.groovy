@@ -4,6 +4,7 @@ import dsl.steps.training.classifier.Classifier
 import dsl.steps.training.functions.Function
 import kernel.Generator
 import kernel.StringUtils
+import kernel.notebook.BlockGenerator
 
 class ClassifierGenerator implements Generator {
 
@@ -28,18 +29,18 @@ class ClassifierGenerator implements Generator {
         def scoring = classifier.scoring.collect { sc -> "\"$sc\":\"$sc\"" }.join(",")
 
         stringBuilder = new StringBuilder().append("$kfoldName=${classifier.kfold.function}")
-                .append(StringUtils.lineFeed())
+                .append(BlockGenerator.NEWLINE)
                 .append("$pipeName= Pipeline([${transform.join(',')} ,$classifierTuple])")
-                .append(StringUtils.lineFeed())
+                .append(BlockGenerator.NEWLINE)
                 .append("$distributionName={${hyperParams.join(",")} }")
-                .append(StringUtils.lineFeed())
+                .append(BlockGenerator.NEWLINE)
 
                 .append("$rsName =RandomizedSearchCV(estimator= $pipeName," +
                         "param_distributions = $distributionName, " +
                         "cv =$kfoldName," +
                         "  verbose = 2, " +
                         "n_jobs = -1, " + "n_iter = 5)")
-                .append(StringUtils.lineFeed())
+                .append(BlockGenerator.NEWLINE)
                 .append("scores_$name = cross_validate(rsName, Xtrain ,y_train,cv=${classifier.cv},scoring={${scoring}}) ")
     }
 

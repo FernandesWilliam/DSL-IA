@@ -3,6 +3,7 @@ package kernel.preparation
 import dsl.steps.preparation.Preprocessing
 import kernel.Generator
 import kernel.StringUtils
+import kernel.notebook.BlockGenerator
 
 class PreprocessingGenerator implements Generator {
 
@@ -35,22 +36,22 @@ class PreprocessingGenerator implements Generator {
         def iqr = "IQR = Q3 - Q1"
         if (value.last() == "*") {
             stringBuilder.append("Q1=${dataset}.quantile(${value[0]})")
-                    .append(StringUtils.lineFeed())
+                    .append(BlockGenerator.NEWLINE)
                     .append("Q3=${dataset}.quantile(${value[1]})")
-                    .append(StringUtils.lineFeed())
+                    .append(BlockGenerator.NEWLINE)
                     .append(iqr)
-                    .append(StringUtils.lineFeed())
+                    .append(BlockGenerator.NEWLINE)
                     .append("$dataset[~(($dataset < (Q1 - 1.5 * IQR)) " +
                             "| ($dataset > (Q3 + 1.5 * IQR))).any(axis = 1)]")
         } else {
             stringBuilder.append("cols= [${value[2].join(",")} ]")
-                    .append(StringUtils.lineFeed())
+                    .append(BlockGenerator.NEWLINE)
                     .append("Q1=$dataset[cols].quantile(${value[0]})")
-                    .append(StringUtils.lineFeed())
+                    .append(BlockGenerator.NEWLINE)
                     .append("Q3=$dataset[cols].quantile(${value[1]})")
-                    .append(StringUtils.lineFeed())
+                    .append(BlockGenerator.NEWLINE)
                     .append(iqr)
-                    .append(StringUtils.lineFeed())
+                    .append(BlockGenerator.NEWLINE)
                     .append("$dataset[~(($dataset[cols] < (Q1 - 1.5 * IQR)) " +
                             "| ($dataset[cols] > (Q3 + 1.5 * IQR))).any(axis = 1)]")
         }
@@ -68,13 +69,13 @@ class PreprocessingGenerator implements Generator {
             dataSetsName = ["dataTrainSet", "dataTestSet"]
         }
         preprocessingBuilder.append("###### ---- PREPROCESSING PHASE ---- ######")
-                .append(StringUtils.lineFeed(2))
+                .append(BlockGenerator.NEWLINE)
         for (entry in entrySet) {
-            preprocessingBuilder.append("## PREPROCESS : ${entry.key.toUpperCase()} ").append(StringUtils.lineFeed())
+            preprocessingBuilder.append("## PREPROCESS : ${entry.key.toUpperCase()} ").append(BlockGenerator.NEWLINE)
             for(dataSet in dataSetsName){
                 preprocessingBuilder
                         .append(preprocessingMethods[(String) entry.key](dataSet, entry.value))
-                        .append(StringUtils.lineFeed(2))
+                        .append(BlockGenerator.NEWLINE)
             }
         }
     }

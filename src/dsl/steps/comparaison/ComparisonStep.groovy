@@ -1,8 +1,6 @@
 package dsl.steps.comparaison
 
 class ComparisonStep {
-
-
     //compare rndForest1, gauss1 with accuracy 10 and time less 4
     String[] toCompare;
     String[] criteria;

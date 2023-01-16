@@ -9,6 +9,7 @@ import dsl.steps.transformation.Mapper
 import dsl.steps.transformation.TransformationStep
 import kernel.Generator
 import kernel.StringUtils
+import kernel.notebook.BlockGenerator
 import kernel.transformation.TransformationGenerator
 
 class TrainingGenerator implements Generator {
@@ -16,7 +17,7 @@ class TrainingGenerator implements Generator {
     StringBuilder stringBuilder;
 
     TrainingGenerator(TrainingStep trainingStep, TransformationStep transformationStep) {
-        stringBuilder = new StringBuilder("###### ---- TRAINING PHASE ---- ######").append(StringUtils.lineFeed())
+        stringBuilder = new StringBuilder("###### ---- TRAINING PHASE ---- ######").append(BlockGenerator.NEWLINE)
         if (trainingStep.knnMapper) {
             generateTrain(trainingStep.knnMapper,"('clf_knn', KNeighborsClassifier())","KNN CLASSIFIER")
         }
@@ -33,11 +34,11 @@ class TrainingGenerator implements Generator {
 
     def generateTrain(Mapper mapper, String tupleName, String commentType) {
         stringBuilder.append("##$commentType")
-                .append(StringUtils.lineFeed())
+                .append(BlockGenerator.NEWLINE)
         for (def entries in mapper.map) {
             def generation = new ClassifierGenerator(entries.key as String, entries.value as Classifier, tupleName).generate()
             stringBuilder.append(generation)
-                    .append(StringUtils.lineFeed(2))
+                    .append(BlockGenerator.NEWLINE)
         }
 
 

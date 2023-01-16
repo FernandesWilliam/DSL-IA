@@ -3,7 +3,9 @@ package kernel.preparation
 
 import dsl.steps.preparation.PreparationStep
 import kernel.Generator
+import kernel.PythonGenerator
 import kernel.StringUtils
+import kernel.notebook.BlockGenerator
 
 class PreparationGenerator implements Generator {
 
@@ -28,7 +30,8 @@ class PreparationGenerator implements Generator {
 
     @Override
     def generate(maps) {
-        return "###### ---- PREPARATION PHASE ---- ######" + StringUtils.lineFeed(2) +
-                importerGenerator.generate([:]) + StringUtils.lineFeed(2) + preprocessingGenerator.generate([:]) + trainTestSplitterGenerator.generate([:])
+        return PythonGenerator.generateInBlock(importerGenerator) +
+                PythonGenerator.generateInBlock(preprocessingGenerator) +
+                PythonGenerator.generateInBlock(trainTestSplitterGenerator);
     }
 }

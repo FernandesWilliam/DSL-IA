@@ -2,6 +2,7 @@ package kernel.preparation
 
 import kernel.Generator
 import kernel.StringUtils
+import kernel.notebook.BlockGenerator
 
 class ImporterGenerator implements Generator {
 
@@ -9,42 +10,42 @@ class ImporterGenerator implements Generator {
 
     ImporterGenerator(filePath) {
             importBuilder
-                    .append(StringUtils.lineFeed())
+                    .append(BlockGenerator.NEWLINE)
                     .append("import pandas as pd")
-                    .append(StringUtils.lineFeed())
+                    .append(BlockGenerator.NEWLINE)
                     .append("try:")
-                    .append(StringUtils.lineFeed())
-                    .append(StringUtils.tab())
-                    .append("dataset = pd.read_csv(\"${filePath}\")")
-                    .append(StringUtils.lineFeed())
+                    .append(BlockGenerator.NEWLINE)
+                    .append("\\t")
+                    .append("dataset = pd.read_csv(\'${filePath}\')")
+                    .append(BlockGenerator.NEWLINE)
                     .append("except FileNotFoundError:")
-                    .append(StringUtils.lineFeed())
-                    .append(StringUtils.tab())
-                    .append("print(\"The path of the dataset is invalid\")")
+                    .append(BlockGenerator.NEWLINE)
+                    .append("\\t")
+                    .append("print('The path of the dataset is invalid')")
     }
 
     ImporterGenerator(trainPath, testPath) {
         importBuilder
-                .append(StringUtils.lineFeed())
+                .append(BlockGenerator.NEWLINE)
                 .append("import pandas as pd")
-                .append(StringUtils.lineFeed())
+                .append(BlockGenerator.NEWLINE)
                 .append("try:")
-                .append(StringUtils.lineFeed())
-                .append(StringUtils.tab())
-                .append("dataTrainSet = pd.read_csv(\"${trainPath}\")")
-                .append(StringUtils.lineFeed())
-                .append(StringUtils.tab())
-                .append("dataTestSet = pd.read_csv(\"${testPath}\")")
-                .append(StringUtils.lineFeed())
+                .append(BlockGenerator.NEWLINE)
+                .append("\\t")
+                .append("dataTrainSet = pd.read_csv(\'${trainPath}\')")
+                .append(BlockGenerator.NEWLINE)
+                .append("\\t")
+                .append("dataTestSet = pd.read_csv(\'${testPath}\')")
+                .append(BlockGenerator.NEWLINE)
                 .append("except FileNotFoundError:")
-                .append(StringUtils.lineFeed())
-                .append(StringUtils.tab())
-                .append("print(\"The path of the dataset is invalid\")")
+                .append(BlockGenerator.NEWLINE)
+                .append("\\t")
+                .append("print(\'The path of the dataset is invalid\')")
     }
 
 
     @Override
     def generate(Object maps) {
-        return importBuilder
+        return  importBuilder
     }
 }
