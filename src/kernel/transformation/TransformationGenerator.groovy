@@ -25,6 +25,7 @@ class TransformationGenerator implements Generator {
         if (transformationStep.standardScalerMapper) {
             generateStdScaler(transformationStep.standardScalerMapper)
         }
+
     }
 
 
@@ -35,6 +36,7 @@ class TransformationGenerator implements Generator {
     }
 
     def generateMinMax(MinMaxMapper minMaxMapper) {
+        if (minMaxMapper.map.size() == 0) return
         stringBuilder.append("# MinMax TRANSFORMATION").append(StringUtils.lineFeed())
         for (def entry in minMaxMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = MinMaxScaler(feature_range=(${entry.value.feature_range.join(',')}),clip=${entry.value.clip.toString().capitalize()},copy=${entry.value.copy.toString().capitalize()})")
@@ -44,6 +46,7 @@ class TransformationGenerator implements Generator {
     }
 
     def generatePCA(PcaMapper pcaMapper) {
+        if (pcaMapper.map.size() == 0) return
         stringBuilder.append("# PCA TRANSFORMATION").append(StringUtils.lineFeed())
         for (def entry in pcaMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = PCA(n_components=${entry.value.n_components})")
@@ -51,7 +54,8 @@ class TransformationGenerator implements Generator {
         }
     }
 
-    def generateStdScaler(StandardScalerMapper stdScalerMapper){
+    def generateStdScaler(StandardScalerMapper stdScalerMapper) {
+        if (stdScalerMapper.map.size() == 0) return
         stringBuilder.append("# SCALER TRANSFORMATION").append(StringUtils.lineFeed());
         for (def entry in stdScalerMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = StandardScaler(copy=${entry.value.copy.toString().capitalize()}, with_mean=${entry.value.with_mean.toString().capitalize()}, with_std=${entry.value.with_std.toString().capitalize()})")
@@ -60,6 +64,18 @@ class TransformationGenerator implements Generator {
     }
 
 
+
+    def generatePipeline(pipelines){
+        if (pipelines.size() == 0) return
+        def processName = "X"
+        for (def entry in pipelines.entrySet()) {
+
+
+            stringBuilder.append("${entry.key} = .fit_transform()")
+                    .append(StringUtils.lineFeed())
+        }
+
+    }
 
     @Override
     def generate(Object maps) {

@@ -38,7 +38,7 @@ abstract class Classifier {
     }
 
 
-    void transformations(... lst) {
-        transformations = lst
+    void transformation(transformationName) {
+        transformations = transformationName
     }
 }

@@ -13,4 +13,9 @@ class RandomForestMapper extends Mapper {
         ClosureExtractor.extract(args[0], randomForestClassifier)
         map[name] = randomForestClassifier
     }
+
+    @Override
+    def mapNewVariable(Object name, Object closure) {
+        return null
+    }
 }

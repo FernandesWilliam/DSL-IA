@@ -4,8 +4,10 @@ class ComparisonStep {
 
 
     //compare rndForest1, gauss1 with accuracy 10 and time less 4
-    String[] toCompare;
-    String[] criteria;
+    def toCompare = []
+    def criteria = []
+    def criteriaWeight = []
+
 
     def compare(... args) {
         toCompare = args;
@@ -17,18 +19,22 @@ class ComparisonStep {
     }
 
     def weight(value) {
-        println value;
+        criteriaWeight.add(value);
         { -> }
-
     }
 
-    def with(...less) {
-        criteria = less;
+    def with(less) {
+        criteria.add(less);
         { -> }
     }
 
     def and(args) {
-        println args;
+        criteria.add(args);
         { -> }
     }
+
+    def propertyMissing(r){
+        println("missing"+r)
+    }
 }
+

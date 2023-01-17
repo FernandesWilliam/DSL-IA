@@ -19,8 +19,9 @@ class RandomForestDistributionParams extends DistributionParameters {
         this.clf__min_samples_leaf = funcObject;
     }
 
-    void clf__bootstrap(... args) {
-        this.clf__bootstrap = args;
+
+    void clf__bootstrap(Boolean... args) {
+        this.clf__bootstrap = args.collect { b -> b.toString().capitalize() };
 
     }
 

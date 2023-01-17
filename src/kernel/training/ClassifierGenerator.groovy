@@ -17,8 +17,8 @@ class ClassifierGenerator implements Generator {
         }
         def hyperParams = []
         for (def entry in classifier.distributionParameters.properties.entrySet()) {
-            if (entry.key != "class")
-                hyperParams << "\"${entry.key}\": ${entry.value instanceof Function ? entry.value.function : entry.value}"
+            if (entry.key == "class") continue
+            hyperParams << "\"${entry.key}\": ${entry.value instanceof Function ? entry.value.function : entry.value}"
         }
 
         def pipeName = "pipe_${name}"

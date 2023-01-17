@@ -1,24 +1,27 @@
+/*
 preparation {
     train "../input/digit-recognizer/train1.csv"
     test "../input/digit-recognizer/test.csv"
 
     preprocessing {
-        notNull() //verif sur les arguments qu'on mette pas
+        notNull()
         removeOutliers 0.01, 0.8
+<<<<<<< HEAD
         drop "column1" // a faire
+=======
+
+>>>>>>> f1c2031 (implement scoring and changed declaration variable structure add pipeline)
     }
 }
 
 transformation {
     normalizer 255 // a faire tatana
     pca {
-        pca55 {
+        pca55 :
             n_components 0.5
-        }
+            a 42
 
-        pca51 {
-            n_components 0.3
-        }
+
     }
     minmax {
         minMax02 {
@@ -67,7 +70,7 @@ training {
                 clf_knn__algorithm 'auto'
 
             }
-            transformations minMax02, pca55
+            transformations minMax02, pca51
         }
     }
     //Gaussian Classifier
@@ -107,13 +110,12 @@ training {
     }
 }
 
-comparison { // a faire
-    // faire gaff au error
+comparison {
     compare rndForest1, gauss1 with accuracy weight 10 and time weight 3
 }
-
 
 
 export "first"
 
 
+*/

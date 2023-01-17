@@ -45,11 +45,6 @@ class TrainingGenerator implements Generator {
 
 
 
-
-    def generateRandomForestTrain() {
-
-    }
-
     @Override
     def generate(Object maps) {
         return stringBuilder
