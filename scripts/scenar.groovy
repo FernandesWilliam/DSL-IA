@@ -20,7 +20,7 @@ transformation {
     declare std as standardScaler {}
 
     pipe t1: [pca55, pca55]
-    pipe t2: t1 + [pca55]
+    pipe t2: [pca55]+ t1
 }
 training {
     declare gaussian1 as gaussian {
