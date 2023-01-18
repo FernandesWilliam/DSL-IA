@@ -21,7 +21,7 @@ class PythonGenerator implements Generator {
                     ComparisonStep comparisonStep) {
         preparation = new PreparationGenerator(preparationStep)
         transformation = new TransformationGenerator(transformationStep);
-        training = new TrainingGenerator(trainingStep, transformationStep)
+        training = new TrainingGenerator(trainingStep)
         comparison = new ComparisonGenerator(comparisonStep,trainingStep,transformationStep);
     }
 

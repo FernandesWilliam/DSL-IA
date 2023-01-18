@@ -15,7 +15,7 @@ class TrainingGenerator implements Generator {
 
     StringBuilder stringBuilder;
 
-    TrainingGenerator(TrainingStep trainingStep, TransformationStep transformationStep) {
+    TrainingGenerator(TrainingStep trainingStep) {
         stringBuilder = new StringBuilder("###### ---- TRAINING PHASE ---- ######").append(StringUtils.lineFeed())
         if (trainingStep.knnMapper) {
             generateTrain(trainingStep.knnMapper,"('clf_knn', KNeighborsClassifier())","KNN CLASSIFIER")

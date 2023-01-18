@@ -70,26 +70,26 @@ class ComparisonGenerator implements Generator, DSLThrower {
         }
     }
 
-    def findModelTransformation(model) {
+    def findModelObject(model) {
         if (model in trainingStep.randomForestMapper.map) {
-            return trainingStep.randomForestMapper.map[model].transformation
+            return trainingStep.randomForestMapper.map[model]
         }
         if (model in trainingStep.gaussianMapper.map) {
-            return trainingStep.gaussianMapper.map[model].transformation
+            return trainingStep.gaussianMapper.map[model]
         }
         if (model in trainingStep.knnMapper.map) {
-            return trainingStep.knnMapper.map[model].transformation
+            return trainingStep.knnMapper.map[model]
         }
 
     }
 
     def generateScores(model) {
-        def transformation = findModelTransformation(model)
-        if(transformationStep.pipelines.find{ pipe-> pipe[0]==transformation} == null){
-            reject("$transformation transformation doesn't exist")
+        def modelObject = findModelObject(model)
+        if(transformationStep.pipelines.find{ pipe-> pipe[0]==modelObject.transformation} == null){
+            reject("$modelObject.transformation transformation doesn't exist")
         }
 
-        comparisonBuilder.append("scores_${model} = cross_validate(rs_${model},X_train_${transformation}, y_train, cv=2, scoring = scoring)").append(StringUtils.lineFeed())
+        comparisonBuilder.append("scores_${model} = cross_validate(rs_${model},X_train_${modelObject.transformation}, y_train, cv=${modelObject.cv}, scoring = scoring)").append(StringUtils.lineFeed())
         for (def criteria : criterias) {
             comparisonBuilder.append("${criteria}_${model} = np.mean(scores_rf['${criteria}']), np.std(scores_rf['${criteria}'])").append(StringUtils.lineFeed())
         }

@@ -10,12 +10,12 @@ class Preprocessing implements DSLThrower {
     def methods = [:]
 
 
-    void notNull() {
-        this.methods.put("notNull", "")
+    def propertyMissing(val){
+        this.methods.put("rmNull", "")
+       // println(val)
+        //this
     }
-
-
-    void removeOutliers(Float q1, Float q3, String... cols) {
+    void rmOutliers(Float q1, Float q3, String... cols) {
         boolean validQ1 = q1 >= 0;
         boolean validQ3 = q3 <= 1;
         boolean validGap = q3 > q1;
@@ -32,7 +32,7 @@ class Preprocessing implements DSLThrower {
 
             this.reject(msg)
         }
-        methods.put("removeOutliers", [q1, q3, cols.length === 0 ? "*" : cols])
+        methods.put("rmOutliers", [q1, q3, cols.length === 0 ? "*" : cols])
     }
 
     void drop(String columnName) {

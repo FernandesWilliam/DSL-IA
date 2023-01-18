@@ -22,7 +22,7 @@ class TrainingStep extends Step {
         gaussianMapper.mapNewVariable(currentVariable, gaussianClosure)
     }
 
-    void rndForest(rndClosure) {
+    void randomForest(rndClosure) {
         randomForestMapper.mapNewVariable(currentVariable, rndClosure)
     }
 
