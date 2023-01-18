@@ -57,28 +57,28 @@ X_train_t4 = std.fit_transform(X_train_t2_pca55_std)
 ###### ---- TRAINING PHASE ---- ######
 ##KNN CLASSIFIER
 kfold_knn1=StratifiedKFold(n_splits=2, shuffle = True)
-pipe_knn1= Pipeline([('clf_knn', KNeighborsClassifier())])
+pipe_knn1= Pipeline([('knn', KNeighborsClassifier())])
 distribution_knn1_param={"neighborsNumber": sp_randint(1,11),"algo": ["auto"] }
 rs_knn1 =RandomizedSearchCV(estimator= pipe_knn1,param_distributions = distribution_knn1_param, cv =kfold_knn1,  verbose = 2, n_jobs = -1, n_iter = 5)
 
 
 ##GAUSSIAN CLASSIFIER
 kfold_gaussian1=StratifiedKFold(n_splits=2, shuffle = True)
-pipe_gaussian1= Pipeline([('clf_nb', GaussianClassifier())])
+pipe_gaussian1= Pipeline([('gauss', GaussianClassifier())])
 distribution_gaussian1_param={"smooth": np.logspace(-9, 0, 5) }
 rs_gaussian1 =RandomizedSearchCV(estimator= pipe_gaussian1,param_distributions = distribution_gaussian1_param, cv =kfold_gaussian1,  verbose = 2, n_jobs = -1, n_iter = 5)
 
 
 kfold_gaussian2=StratifiedKFold(n_splits=2, shuffle = True)
-pipe_gaussian2= Pipeline([('clf_nb', GaussianClassifier())])
+pipe_gaussian2= Pipeline([('gauss', GaussianClassifier())])
 distribution_gaussian2_param={"smooth": np.logspace(-9, 0, 5) }
 rs_gaussian2 =RandomizedSearchCV(estimator= pipe_gaussian2,param_distributions = distribution_gaussian2_param, cv =kfold_gaussian2,  verbose = 2, n_jobs = -1, n_iter = 5)
 
 
 ##RANDOMFOREST CLASSIFIER
 kfold_rndForest1=StratifiedKFold(n_splits=2, shuffle = True)
-pipe_rndForest1= Pipeline([('clf_r', RandomForestClassifier())])
-distribution_rndForest1_param={"maxDepth": [5, null],"samplesSplit": sp_randint(2,11),"maxFeatures": sp_randint(1,11),"samplesLeaf": sp_randint(1,11),"bootstrap": [true, true],"criterion": [gini, entropy] }
+pipe_rndForest1= Pipeline([('randForest', RandomForestClassifier())])
+distribution_rndForest1_param={"maxDepth": [5, null],"samplesSplit": sp_randint(2,11),"maxFeatures": sp_randint(1,11),"samplesLeaf": sp_randint(1,11),"bootstrap": [True, False],"criterion": ["gini", "entropy"] }
 rs_rndForest1 =RandomizedSearchCV(estimator= pipe_rndForest1,param_distributions = distribution_rndForest1_param, cv =kfold_rndForest1,  verbose = 2, n_jobs = -1, n_iter = 5)
 
 

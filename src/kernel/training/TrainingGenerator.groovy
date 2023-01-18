@@ -18,13 +18,13 @@ class TrainingGenerator implements Generator {
     TrainingGenerator(TrainingStep trainingStep) {
         stringBuilder = new StringBuilder("###### ---- TRAINING PHASE ---- ######").append(StringUtils.lineFeed())
         if (trainingStep.knnMapper) {
-            generateTrain(trainingStep.knnMapper,"('clf_knn', KNeighborsClassifier())","KNN CLASSIFIER")
+            generateTrain(trainingStep.knnMapper,"('knn', KNeighborsClassifier())","KNN CLASSIFIER")
         }
         if (trainingStep.gaussianMapper) {
-            generateTrain(trainingStep.gaussianMapper,"('clf_nb', GaussianClassifier())","GAUSSIAN CLASSIFIER")
+            generateTrain(trainingStep.gaussianMapper,"('gauss', GaussianClassifier())","GAUSSIAN CLASSIFIER")
         }
         if (trainingStep.randomForestMapper) {
-            generateTrain(trainingStep.randomForestMapper,"('clf_r', RandomForestClassifier())","RANDOMFOREST CLASSIFIER")
+            generateTrain(trainingStep.randomForestMapper,"('randForest', RandomForestClassifier())","RANDOMFOREST CLASSIFIER")
         }
 
     }
