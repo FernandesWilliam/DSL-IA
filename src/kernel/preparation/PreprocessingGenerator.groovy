@@ -10,8 +10,9 @@ class PreprocessingGenerator implements Generator {
     Boolean mergedData;
 
     def preprocessingMethods = [
-            "notNull"       : { dataset, v -> "${dataset}.dropna()"+CodeBlockGenerator.NEWLINE},
-            "removeOutliers": { dataset, v -> removeOutliers(dataset, v) },
+
+            "rmNull"       : { dataset, v -> "${dataset}.dropna()"+CodeBlockGenerator.NEWLINE},
+            "rmOutliers"    : { dataset, v -> removeOutliers(dataset, v) },
             "drop"          : { dataSet, columnName -> "${dataSet}.drop(['${columnName}'], axis = 1)"+CodeBlockGenerator.NEWLINE}
     ]
 

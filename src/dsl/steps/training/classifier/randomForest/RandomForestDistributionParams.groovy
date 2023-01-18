@@ -4,37 +4,37 @@ import dsl.steps.training.classifier.DistributionParameters
 import dsl.steps.training.functions.Function
 
 class RandomForestDistributionParams extends DistributionParameters {
-    def clf__max_depth = [];
-    Function clf__min_samples_split;
-    Function clf__max_features;
-    Function clf__min_samples_leaf;
-    Boolean[] clf__bootstrap;
-    String[] clf__criterion;
+    def maxDepth = [];
+    Function samplesSplit;
+    Function maxFeatures;
+    Function samplesLeaf;
+    Boolean[] bootstrap;
+    String[] criterion;
 
-    void clf__max_depth(... args) {
-        this.clf__max_depth = args;
+    void maxDepth(... args) {
+        this.maxDepth = args;
     }
 
-    void clf__min_samples_leaf(funcObject) {
-        this.clf__min_samples_leaf = funcObject;
+    void samplesLeaf(funcObject) {
+        this.samplesLeaf = funcObject;
     }
 
 
-    void clf__bootstrap(Boolean... args) {
-        this.clf__bootstrap = args.collect { b -> b.toString().capitalize() };
+    void bootstrap(Boolean... args) {
+        this.bootstrap = args.collect { b -> b.toString().capitalize() };
 
     }
 
-    void clf__criterion(... criterion) {
-        this.clf__criterion = criterion;
+    void criterion(... criterion) {
+        this.criterion = criterion;
     }
 
-    void clf__max_features(funcObject) {
-        this.clf__max_features = funcObject;
+    void maxFeatures(funcObject) {
+        this.maxFeatures = funcObject;
     }
 
-    void clf__min_samples_split(funcObject) {
-        this.clf__min_samples_split = funcObject;
+    void samplesSplit(funcObject) {
+        this.samplesSplit = funcObject;
     }
 
 

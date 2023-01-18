@@ -65,7 +65,7 @@ class TransformationGenerator implements Generator {
 
     def generateStdScaler(StandardScalerMapper stdScalerMapper){
         if (stdScalerMapper.map.size() == 0) return
-        stringBuilder.append("# SCALER TRANSFORMATION").append(CodeBlockGenerator.NEWLINE)
+        stringBuilder.append("# STANDARDSCALER TRANSFORMATION").append(CodeBlockGenerator.NEWLINE)
 
         for (def entry in stdScalerMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = StandardScaler(copy=${entry.value.copy.toString().capitalize()}, with_mean=${entry.value.with_mean.toString().capitalize()}, with_std=${entry.value.with_std.toString().capitalize()})")
@@ -77,6 +77,9 @@ class TransformationGenerator implements Generator {
 
     def generatePipeline(pipelines) {
         if (pipelines.size() == 0) return
+        stringBuilder.append(" ## ---- TRANSFORMATION PROCESSING ---- ##")
+                .append(StringUtils.lineFeed());
+
         def start = "X_train"
         def transformationName = start
         for (def i = 0; i < pipelines.size(); i++) {

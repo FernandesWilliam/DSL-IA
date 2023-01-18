@@ -5,16 +5,18 @@ import dsl.steps.training.classifier.DistributionParameters
 import dsl.steps.training.functions.Function
 
 class KnnDistributionParams extends DistributionParameters {
-    Function clf_knn__n_neighbors;
-    def clf_knn__algorithm;
+    Function neighborsNumber;
+    def algo;
 
-    void clf_knn__n_neighbors(functionObject) {
-        this.clf_knn__n_neighbors = functionObject
+
+
+    void neighborsNumber(functionObject) {
+        this.neighborsNumber = functionObject
     }
 
 
-    void clf_knn__algorithm(... value) {
-        this.clf_knn__algorithm = value.collect { v -> "\'$v\'" }
+    void algo(... value) {
+        this.algo = value.collect { v -> "\"$v\"" }
     }
 
 
