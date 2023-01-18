@@ -1,6 +1,5 @@
 preparation {
-    train "../input/digit-recognizer/train1.csv"
-    test "../input/digit-recognizer/test.csv"
+    fetch "../input/digit-recognizer/train1.csv"
 
     preprocessing {
         rmNull

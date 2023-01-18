@@ -1,6 +1,7 @@
 package dsl
 
 import dsl.steps.comparison.ComparisonStep
+import dsl.steps.graph.GraphResultGenerator
 import dsl.steps.preparation.PreparationStep
 import dsl.steps.training.TrainingStep
 import dsl.steps.transformation.TransformationStep
@@ -15,7 +16,7 @@ class PythonModel {
     ComparisonStep comparisonStep;
     def build(exportFilePath) {
         def file = new File("../result/" + exportFilePath + ".py")
-
+        def graphFile = new File("../result/graph.py")
         def generator = new PythonGenerator(preparationStep,
                 transformationStep,
                 trainingStep,
@@ -23,6 +24,10 @@ class PythonModel {
 
         file.text = generator.generate([:])
 
+
+        file.text = generator.generate([:])
+        GraphResultGenerator graphGenerator =  new GraphResultGenerator(preparationStep, trainingStep, transformationStep)
+        graphFile.text = graphGenerator.generate();
 
     }
 
