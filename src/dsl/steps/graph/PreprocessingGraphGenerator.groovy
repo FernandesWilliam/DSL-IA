@@ -20,25 +20,25 @@ class PreprocessingGraphGenerator {
             if(firstPreProcess){
                 firstPreProcess = false;
                 if(splitData){
-                    msg += "g.edge('train','${it.key}')\n";
-                    msg += "g.edge('test','${it.key}')\n";
+                    msg += "\td.edge('train','${it.key}')\n";
+                    msg += "\td.edge('test','${it.key}')\n";
                 }
                 else{
-                    msg += "g.edge('data','${it.key}')\n";
+                    msg += "\td.edge('data','${it.key}')\n";
                 }
             }
             else {
-                msg += "g.edge('${lastPreProcess}','${it.key}')\n";
+                msg += "\td.edge('${lastPreProcess}','${it.key}')\n";
             }
             lastPreProcess = it.key;
         }}
 
         if(splitData){
-            msg += "g.edge('${lastPreProcess}','PreProssTrain')\n";
-            msg += "g.edge('${lastPreProcess}','PreProssTest')\n";
+            msg += "\td.edge('${lastPreProcess}','PreProssTrain')\n";
+            msg += "\td.edge('${lastPreProcess}','PreProssTest')\n";
         }
         else{
-            msg += "g.edge('${lastPreProcess}','PreProssDATA')\n";
+            msg += "\td.edge('${lastPreProcess}','PreProssDATA')\n";
 
         }
         return msg;
