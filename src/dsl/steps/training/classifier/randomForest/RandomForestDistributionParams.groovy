@@ -8,7 +8,7 @@ class RandomForestDistributionParams extends DistributionParameters {
     Function samplesSplit;
     Function maxFeatures;
     Function samplesLeaf;
-    Boolean[] bootstrap;
+    String[] bootstrap;
     String[] criterion;
 
     void maxDepth(... args) {
@@ -21,12 +21,14 @@ class RandomForestDistributionParams extends DistributionParameters {
 
 
     void bootstrap(Boolean... args) {
+
         this.bootstrap = args.collect { b -> b.toString().capitalize() };
+
 
     }
 
     void criterion(... criterion) {
-        this.criterion = criterion;
+        this.criterion = criterion.collect { v -> "\"$v\"" }
     }
 
     void maxFeatures(funcObject) {
