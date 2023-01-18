@@ -3,8 +3,7 @@ package kernel.training
 import dsl.steps.training.classifier.knn.KnnClassifier
 import dsl.steps.training.functions.Function
 import kernel.Generator
-import kernel.StringUtils
-import kernel.notebook.BlockGenerator
+import kernel.notebook.CodeBlockGenerator
 
 class KnnGenerator implements Generator {
     //  kfold stratified(2, true)
@@ -39,29 +38,28 @@ class KnnGenerator implements Generator {
         }
         def hyperParams = []
         for (def entry in knnClassifier.distributionParameters.properties.entrySet()) {
-            if (entry.key != "class")
-                hyperParams << "\"${entry.key}\": ${entry.value instanceof Function ? entry.value.function : entry.value}" + BlockGenerator.NEWLINE
+            if (entry.key != "class") {
+                hyperParams << "\"${entry.key}\": ${entry.value instanceof Function ? entry.value.function : entry.value}"
+            }
         }
 
         def pipeName = "pipe_${name}"
         def distributionName = "distribution_${name}_param"
         def kfoldName = "kfold_${name}"
         def rsName = "rs_$name";
-        def scoring = knnClassifier.scoring.collect { sc -> "\"$sc\":\"$sc\"" }.join(",")
-
+        def scoring = knnClassifier.scoring.collect { sc -> "\'$sc\':\'$sc\'" }.join(",")
         stringBuilder = new StringBuilder()
                 .append("$kfoldName=${knnClassifier.kfold.function}")
-                .append(BlockGenerator.NEWLINE)
+                .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
                 .append("$pipeName= Pipeline([${transform.join(',')} ,('clf_knn', KNeighborsClassifier())])")
-                .append(BlockGenerator.NEWLINE)
-                .append("$distributionName={"+BlockGenerator.NEWLINE+"${hyperParams.join(",")} }")
-                .append(BlockGenerator.NEWLINE)
+                .append("$distributionName={${hyperParams.join(",")} }")
+                .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
                 .append("$rsName =RandomizedSearchCV(estimator= $pipeName," +
-                        "param_distributions = $distributionName, " + BlockGenerator.NEWLINE +
-                        "cv =$kfoldName," + BlockGenerator.NEWLINE +
-                        "  verbose = 2, " + BlockGenerator.NEWLINE +
+                        "param_distributions = $distributionName, " +
+                        "cv =$kfoldName," +
+                        "  verbose = 2, " +
                         "n_jobs = -1, " + "n_iter = 5)")
-                .append(BlockGenerator.NEWLINE)
+                .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
                 .append("scores_$name = cross_validate(rsName, Xtrain ,y_train,cv=${knnClassifier.cv},scoring={${scoring}}) ")
     }
 

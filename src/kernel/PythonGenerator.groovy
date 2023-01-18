@@ -4,7 +4,8 @@ import dsl.steps.comparaison.ComparisonStep
 import dsl.steps.preparation.PreparationStep
 import dsl.steps.training.TrainingStep
 import dsl.steps.transformation.TransformationStep
-import kernel.notebook.BlockGenerator
+import kernel.notebook.CodeBlockGenerator
+import kernel.notebook.MarkDownBlockGenerator
 import kernel.preparation.PreparationGenerator
 import kernel.training.TrainingGenerator
 import kernel.transformation.TransformationGenerator
@@ -25,16 +26,24 @@ class PythonGenerator implements Generator {
 
     }
 
-    public static String generateInBlock(Generator generator){
+    static String generateCodeBlock(Generator generator){
         nb ++;
-        return (new BlockGenerator(nb, generator.generate([:]) as String).generate([:]));
+        return (new CodeBlockGenerator(nb, generator.generate([:]) as String).generate([:]));
+    }
+
+    static String generateMarkDownBlock(String text){
+        return (new MarkDownBlockGenerator(text)).generate([:]);
     }
 
     @Override
     def generate(Object maps) {
         return "{\n" +
                 " \"cells\": ["+
-                preparation.generate([:]) + StringUtils.lineFeed() + generateInBlock(transformation) + generateInBlock(training)+"\n" +
-                        " ],";
+                preparation.generate([:]) +
+                generateMarkDownBlock( "TRANSFORMATION")+
+                generateCodeBlock(transformation) +
+                generateMarkDownBlock( "TRAINING")+
+                training.generate()+"\n" +
+                        " ]}";
     }
 }

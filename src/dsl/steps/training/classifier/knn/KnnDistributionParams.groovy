@@ -14,7 +14,7 @@ class KnnDistributionParams extends DistributionParameters {
 
 
     void clf_knn__algorithm(... value) {
-        this.clf_knn__algorithm = value.collect { v -> "\"$v\"" }
+        this.clf_knn__algorithm = value.collect { v -> "\'$v\'" }
     }
 
 

@@ -3,8 +3,7 @@ package kernel.training
 import dsl.steps.training.classifier.Classifier
 import dsl.steps.training.functions.Function
 import kernel.Generator
-import kernel.StringUtils
-import kernel.notebook.BlockGenerator
+import kernel.notebook.CodeBlockGenerator
 
 class ClassifierGenerator implements Generator {
 
@@ -19,28 +18,28 @@ class ClassifierGenerator implements Generator {
         def hyperParams = []
         for (def entry in classifier.distributionParameters.properties.entrySet()) {
             if (entry.key != "class")
-                hyperParams << "\"${entry.key}\": ${entry.value instanceof Function ? entry.value.function : entry.value}"
+                hyperParams << "\'${entry.key}\': ${entry.value instanceof Function ? entry.value.function : entry.value}"
         }
 
         def pipeName = "pipe_${name}"
         def distributionName = "distribution_${name}_param"
         def kfoldName = "kfold_${name}"
         def rsName = "rs_$name";
-        def scoring = classifier.scoring.collect { sc -> "\"$sc\":\"$sc\"" }.join(",")
-
+        def scoring = classifier.scoring.collect { sc -> "\'$sc\':\'$sc\'" }.join(",")
+        print hyperParams
         stringBuilder = new StringBuilder().append("$kfoldName=${classifier.kfold.function}")
-                .append(BlockGenerator.NEWLINE)
+                .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
                 .append("$pipeName= Pipeline([${transform.join(',')} ,$classifierTuple])")
-                .append(BlockGenerator.NEWLINE)
+                .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
                 .append("$distributionName={${hyperParams.join(",")} }")
-                .append(BlockGenerator.NEWLINE)
+                .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
 
                 .append("$rsName =RandomizedSearchCV(estimator= $pipeName," +
                         "param_distributions = $distributionName, " +
                         "cv =$kfoldName," +
                         "  verbose = 2, " +
                         "n_jobs = -1, " + "n_iter = 5)")
-                .append(BlockGenerator.NEWLINE)
+                .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
                 .append("scores_$name = cross_validate(rsName, Xtrain ,y_train,cv=${classifier.cv},scoring={${scoring}}) ")
     }
 

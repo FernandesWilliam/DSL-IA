@@ -2,8 +2,7 @@ package kernel.preparation
 
 import dsl.steps.preparation.Preprocessing
 import kernel.Generator
-import kernel.StringUtils
-import kernel.notebook.BlockGenerator
+import kernel.notebook.CodeBlockGenerator
 
 class PreprocessingGenerator implements Generator {
 
@@ -11,9 +10,9 @@ class PreprocessingGenerator implements Generator {
     Boolean mergedData;
 
     def preprocessingMethods = [
-            "notNull"       : { dataset, v -> "${dataset}.dropna()" },
+            "notNull"       : { dataset, v -> "${dataset}.dropna()"+CodeBlockGenerator.NEWLINE},
             "removeOutliers": { dataset, v -> removeOutliers(dataset, v) },
-            "drop"          : { dataSet, columnName -> "${dataSet}.drop(['${columnName}'], axis = 1)"}
+            "drop"          : { dataSet, columnName -> "${dataSet}.drop(['${columnName}'], axis = 1)"+CodeBlockGenerator.NEWLINE}
     ]
 
     PreprocessingGenerator(Preprocessing preprocessing, Boolean mergedData) {
@@ -36,24 +35,26 @@ class PreprocessingGenerator implements Generator {
         def iqr = "IQR = Q3 - Q1"
         if (value.last() == "*") {
             stringBuilder.append("Q1=${dataset}.quantile(${value[0]})")
-                    .append(BlockGenerator.NEWLINE)
+                    .append(CodeBlockGenerator.NEWLINE)
                     .append("Q3=${dataset}.quantile(${value[1]})")
-                    .append(BlockGenerator.NEWLINE)
+                    .append(CodeBlockGenerator.NEWLINE)
                     .append(iqr)
-                    .append(BlockGenerator.NEWLINE)
+                    .append(CodeBlockGenerator.NEWLINE)
                     .append("$dataset[~(($dataset < (Q1 - 1.5 * IQR)) " +
                             "| ($dataset > (Q3 + 1.5 * IQR))).any(axis = 1)]")
+                    .append(CodeBlockGenerator.NEWLINE)
         } else {
             stringBuilder.append("cols= [${value[2].join(",")} ]")
-                    .append(BlockGenerator.NEWLINE)
+                    .append(CodeBlockGenerator.NEWLINE)
                     .append("Q1=$dataset[cols].quantile(${value[0]})")
-                    .append(BlockGenerator.NEWLINE)
+                    .append(CodeBlockGenerator.NEWLINE)
                     .append("Q3=$dataset[cols].quantile(${value[1]})")
-                    .append(BlockGenerator.NEWLINE)
+                    .append(CodeBlockGenerator.NEWLINE)
                     .append(iqr)
-                    .append(BlockGenerator.NEWLINE)
+                    .append(CodeBlockGenerator.NEWLINE)
                     .append("$dataset[~(($dataset[cols] < (Q1 - 1.5 * IQR)) " +
                             "| ($dataset[cols] > (Q3 + 1.5 * IQR))).any(axis = 1)]")
+                    .append(CodeBlockGenerator.NEWLINE)
         }
 
     }
@@ -69,13 +70,13 @@ class PreprocessingGenerator implements Generator {
             dataSetsName = ["dataTrainSet", "dataTestSet"]
         }
         preprocessingBuilder.append("###### ---- PREPROCESSING PHASE ---- ######")
-                .append(BlockGenerator.NEWLINE)
+                .append(CodeBlockGenerator.NEWLINE)
         for (entry in entrySet) {
-            preprocessingBuilder.append("## PREPROCESS : ${entry.key.toUpperCase()} ").append(BlockGenerator.NEWLINE)
+            preprocessingBuilder.append("## PREPROCESS : ${entry.key.toUpperCase()} ").append(CodeBlockGenerator.NEWLINE)
             for(dataSet in dataSetsName){
                 preprocessingBuilder
                         .append(preprocessingMethods[(String) entry.key](dataSet, entry.value))
-                        .append(BlockGenerator.NEWLINE)
+                        .append(CodeBlockGenerator.NEWLINE)
             }
         }
     }

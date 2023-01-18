@@ -4,8 +4,7 @@ package kernel.preparation
 import dsl.steps.preparation.PreparationStep
 import kernel.Generator
 import kernel.PythonGenerator
-import kernel.StringUtils
-import kernel.notebook.BlockGenerator
+import kernel.notebook.MarkDownBlockGenerator
 
 class PreparationGenerator implements Generator {
 
@@ -30,8 +29,11 @@ class PreparationGenerator implements Generator {
 
     @Override
     def generate(maps) {
-        return PythonGenerator.generateInBlock(importerGenerator) +
-                PythonGenerator.generateInBlock(preprocessingGenerator) +
-                PythonGenerator.generateInBlock(trainTestSplitterGenerator);
+        return (PythonGenerator.generateMarkDownBlock("DATASET IMPORT")+
+                PythonGenerator.generateCodeBlock(importerGenerator) +
+                PythonGenerator.generateMarkDownBlock("PREPROCESSING")+
+                PythonGenerator.generateCodeBlock(preprocessingGenerator) +
+                PythonGenerator.generateMarkDownBlock("SPLITTING")+
+                PythonGenerator.generateCodeBlock(trainTestSplitterGenerator));
     }
 }
