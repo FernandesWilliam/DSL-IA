@@ -22,7 +22,7 @@ class PythonGenerator implements Generator {
         preparation = new PreparationGenerator(preparationStep)
         transformation = new TransformationGenerator(transformationStep);
         training = new TrainingGenerator(trainingStep, transformationStep)
-        comparison = new ComparisonGenerator(comparisonStep,trainingStep);
+        comparison = new ComparisonGenerator(comparisonStep,trainingStep,transformationStep);
     }
 
 

@@ -31,7 +31,7 @@ training {
         distributionParams {
             clf_nb__var_smoothing logspace(-9, 0, 5)
         }
-        transformation t5
+        transformation t2
     }
 
     declare gaussian2 as gaussian {

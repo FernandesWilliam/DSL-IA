@@ -3,6 +3,7 @@ package kernel.comparaison
 import dsl.steps.DSLThrower
 import dsl.steps.comparison.ComparisonStep
 import dsl.steps.training.TrainingStep
+import dsl.steps.transformation.TransformationStep
 import kernel.Generator
 import kernel.StringUtils
 
@@ -15,7 +16,8 @@ class ComparisonGenerator implements Generator, DSLThrower {
 
     def trainingStep;
 
-    ComparisonGenerator(ComparisonStep comparisonStep, TrainingStep trainingStep) {
+    def transformationStep;
+    ComparisonGenerator(ComparisonStep comparisonStep, TrainingStep trainingStep,TransformationStep transformationStep) {
         this.models = comparisonStep.toCompare;
         this.criterias = comparisonStep.criteria;
         this.weights = comparisonStep.criteriaWeight;
@@ -27,6 +29,7 @@ class ComparisonGenerator implements Generator, DSLThrower {
             reject("The training algorithm : ${value} isn't declared in training phase")
         }
         this.trainingStep = trainingStep;
+        this.transformationStep = transformationStep;
     }
 
 
@@ -82,8 +85,11 @@ class ComparisonGenerator implements Generator, DSLThrower {
 
     def generateScores(model) {
         def transformation = findModelTransformation(model)
+        if(transformationStep.pipelines.find{ pipe-> pipe[0]==transformation} == null){
+            reject("$transformation transformation doesn't exist")
+        }
 
-        comparisonBuilder.append("scores_${model} = cross_validate(rs_${model},X_train_${}, y_train, cv=2, scoring = scoring)").append(StringUtils.lineFeed())
+        comparisonBuilder.append("scores_${model} = cross_validate(rs_${model},X_train_${transformation}, y_train, cv=2, scoring = scoring)").append(StringUtils.lineFeed())
         for (def criteria : criterias) {
             comparisonBuilder.append("${criteria}_${model} = np.mean(scores_rf['${criteria}']), np.std(scores_rf['${criteria}'])").append(StringUtils.lineFeed())
         }

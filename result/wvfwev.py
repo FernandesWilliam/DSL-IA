@@ -81,7 +81,7 @@ scores['gaussian1'] = {}
 scores['gaussian1']['accuracy'] = []
 scores['gaussian1']['time'] = []
 
-scores_gaussian1 = cross_validate(rs_gaussian1,X_train_null, y_train, cv=2, scoring = scoring)
+scores_gaussian1 = cross_validate(rs_gaussian1,X_train_t2, y_train, cv=2, scoring = scoring)
 accuracy_gaussian1 = np.mean(scores_rf['accuracy']), np.std(scores_rf['accuracy'])
 time_gaussian1 = np.mean(scores_rf['time']), np.std(scores_rf['time'])
 
@@ -93,7 +93,7 @@ scores['gaussian2'] = {}
 scores['gaussian2']['accuracy'] = []
 scores['gaussian2']['time'] = []
 
-scores_gaussian2 = cross_validate(rs_gaussian2,X_train_null, y_train, cv=2, scoring = scoring)
+scores_gaussian2 = cross_validate(rs_gaussian2,X_train_t3, y_train, cv=2, scoring = scoring)
 accuracy_gaussian2 = np.mean(scores_rf['accuracy']), np.std(scores_rf['accuracy'])
 time_gaussian2 = np.mean(scores_rf['time']), np.std(scores_rf['time'])
 
