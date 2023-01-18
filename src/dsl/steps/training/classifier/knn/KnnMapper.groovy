@@ -13,5 +13,8 @@ class KnnMapper extends Mapper {
         map[name] = knnCreator
     }
 
-
+    @Override
+    def mapNewVariable(Object name, Object closure) {
+        return null
+    }
 }

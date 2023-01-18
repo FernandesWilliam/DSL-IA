@@ -1,11 +1,10 @@
 package dsl
 
-import dsl.steps.comparaison.ComparisonStep
+import dsl.steps.comparison.ComparisonStep
 import dsl.steps.preparation.PreparationStep
 import dsl.steps.training.TrainingStep
 import dsl.steps.transformation.TransformationStep
 import kernel.PythonGenerator
-import kernel.preparation.PreparationGenerator
 
 class PythonModel {
 

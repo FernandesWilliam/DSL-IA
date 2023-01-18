@@ -17,8 +17,9 @@ class ClassifierGenerator implements Generator {
         }
         def hyperParams = []
         for (def entry in classifier.distributionParameters.properties.entrySet()) {
-            if (entry.key != "class")
-                hyperParams << "\'${entry.key}\': ${entry.value instanceof Function ? entry.value.function : entry.value}"
+            if (entry.key != "class") continue
+            hyperParams << "\'${entry.key}\': ${entry.value instanceof Function ? entry.value.function : entry.value}"
+
         }
 
         def pipeName = "pipe_${name}"
@@ -26,11 +27,11 @@ class ClassifierGenerator implements Generator {
         def kfoldName = "kfold_${name}"
         def rsName = "rs_$name";
         def scoring = classifier.scoring.collect { sc -> "\'$sc\':\'$sc\'" }.join(",")
-        print hyperParams
         stringBuilder = new StringBuilder().append("$kfoldName=${classifier.kfold.function}")
                 .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
-                .append("$pipeName= Pipeline([${transform.join(',')} ,$classifierTuple])")
+                .append("$pipeName= Pipeline([$classifierTuple])")
                 .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
+
                 .append("$distributionName={${hyperParams.join(",")} }")
                 .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
 
@@ -40,7 +41,7 @@ class ClassifierGenerator implements Generator {
                         "  verbose = 2, " +
                         "n_jobs = -1, " + "n_iter = 5)")
                 .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
-                .append("scores_$name = cross_validate(rsName, Xtrain ,y_train,cv=${classifier.cv},scoring={${scoring}}) ")
+
     }
 
     @Override

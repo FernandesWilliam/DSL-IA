@@ -2,22 +2,85 @@ package dsl.steps.transformation
 
 import dsl.ClosureExtractor
 import dsl.steps.DSLThrower
+import dsl.steps.Step
 
-class TransformationStep implements DSLThrower {
+import java.sql.Array
 
-    PcaMapper pcaMapper;
+class TransformationStep extends Step implements DSLThrower {
 
-    MinMaxMapper minMaxMapper;
+    PcaMapper pcaMapper = new PcaMapper();
+    MinMaxMapper minMaxMapper = new MinMaxMapper();
+    StandardScalerMapper standardScalerMapper = new StandardScalerMapper();
 
-    StandardScalerMapper standardScalerMapper;
+    def pipelines = []
 
     float normalize = 0;
 
-    void pca(pcaClosure) {
-        if (pcaMapper != null)
-            this.reject("You already defined pca property.Can't be append twice")
-        pcaMapper = new PcaMapper()
-        ClosureExtractor.extract(pcaClosure, pcaMapper)
+    def pca(pcaClosure) {
+        pcaMapper.mapNewVariable(currentVariable, pcaClosure);
+    }
+
+
+    def minmax(minMaxClosure) {
+        minMaxMapper.mapNewVariable(currentVariable, minMaxClosure);
+    }
+
+    void standardScaler(standardScalerClosure) {
+        standardScalerMapper.mapNewVariable(currentVariable, standardScalerClosure);
+    }
+
+
+    def isAlreadyDeclared(values) {
+        for (def value : values) {
+            if (pcaMapper.map.containsKey(value) || minMaxMapper.map.containsKey(value) ||
+                    standardScalerMapper.map.containsKey(value)) continue
+            return value
+        }
+        return true;
+
+    }
+
+    def pipe(entrySet) {
+        def findInPipelines = { name -> pipelines.find { array -> array[0] == name } != null }
+
+        for (def entry in entrySet.entrySet()) {
+            if (findInPipelines(entry.key)) {
+                reject("${entry.key} is already declared.")
+            }
+
+
+            def clone = entry.value.clone()
+            def response = isAlreadyDeclared(clone)
+
+            while (response != true) {
+                def isInside = findInPipelines(response)
+                if (isInside && clone[0]===  response) {
+                    clone.removeIf { v -> response == v };
+
+                }else if(isInside) {
+                    reject("${response} transformation needs to be specified in the first.")
+                }
+                else {
+                    reject("${response} isn't declared. You should declare the variable before.")
+                }
+                response = isAlreadyDeclared(clone)
+            }
+
+            // detect same transformation
+            for (def pipeEntry : pipelines) {
+                def same = 0;
+
+                if (pipeEntry[1].size() != entry.value.size()) continue
+                for (def i = 0; i < pipeEntry[1].size(); i++) {
+                    if (!pipeEntry[1][i].equals(entry.value[i])) break
+                    same++;
+                }
+                if (same == entry.value.size())
+                    reject("${entry.key} transformation already exist : ${pipeEntry[0]}")
+            }
+            pipelines.add([entry.key, entry.value])
+        }
+
     }
 
 
@@ -28,20 +91,8 @@ class TransformationStep implements DSLThrower {
             this.reject("You already defined normalized Function.Can't be append twice")
         this.normalize = value;
     }
-
-    void minmax(minMaxClosure) {
-        if (minMaxMapper != null)
-            this.reject("You already defined minmax property.Can't be append twice")
-        minMaxMapper = new MinMaxMapper();
-        ClosureExtractor.extract(minMaxClosure, minMaxMapper)
-    }
-
-    void standardScaler(standardScalerClosure){
-        if (standardScalerMapper != null)
-            this.reject("You already defined standardScaler property.Can't be append twice");
-        standardScalerMapper = new StandardScalerMapper();
-        ClosureExtractor.extract(standardScalerClosure, standardScalerMapper);
-    }
-
-
 }
+
+
+
+

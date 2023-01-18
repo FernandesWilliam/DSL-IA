@@ -26,6 +26,8 @@ class TransformationGenerator implements Generator {
         if (transformationStep.standardScalerMapper) {
             generateStdScaler(transformationStep.standardScalerMapper)
         }
+        generatePipeline(transformationStep.pipelines)
+
     }
 
 
@@ -38,6 +40,7 @@ class TransformationGenerator implements Generator {
     }
 
     def generateMinMax(MinMaxMapper minMaxMapper) {
+        if (minMaxMapper.map.size() == 0) return
         stringBuilder.append("# MinMax TRANSFORMATION").append(CodeBlockGenerator.NEWLINE)
         for (def entry in minMaxMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = MinMaxScaler(feature_range=(${entry.value.feature_range.join(',')}),clip=${entry.value.clip.toString().capitalize()},copy=${entry.value.copy.toString().capitalize()})")
@@ -48,7 +51,11 @@ class TransformationGenerator implements Generator {
     }
 
     def generatePCA(PcaMapper pcaMapper) {
+
+        if (pcaMapper.map.size() == 0) return
         stringBuilder.append("# PCA TRANSFORMATION").append(CodeBlockGenerator.NEWLINE)
+        if (pcaMapper.map.size() == 0) return
+        stringBuilder.append("# PCA TRANSFORMATION").append(StringUtils.lineFeed())
         for (def entry in pcaMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = PCA(n_components=${entry.value.n_components})")
                     .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
@@ -57,7 +64,9 @@ class TransformationGenerator implements Generator {
     }
 
     def generateStdScaler(StandardScalerMapper stdScalerMapper){
+        if (stdScalerMapper.map.size() == 0) return
         stringBuilder.append("# SCALER TRANSFORMATION").append(CodeBlockGenerator.NEWLINE)
+
         for (def entry in stdScalerMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = StandardScaler(copy=${entry.value.copy.toString().capitalize()}, with_mean=${entry.value.with_mean.toString().capitalize()}, with_std=${entry.value.with_std.toString().capitalize()})")
                     .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
@@ -66,6 +75,35 @@ class TransformationGenerator implements Generator {
     }
 
 
+    def generatePipeline(pipelines) {
+        if (pipelines.size() == 0) return
+        def start = "X_train"
+        def transformationName = start
+        for (def i = 0; i < pipelines.size(); i++) {
+            stringBuilder.append("### Transformation : ${i + 1}")
+                    .append(StringUtils.lineFeed());
+            for (def j = 0; j < pipelines[i][1].size(); j++) {
+                if (pipelines.find { pipe -> pipe[0] == pipelines[i][1][j] } != null) {
+                    transformationName = "${start}_${pipelines[i][1][j]}";
+                    continue
+                } else if (j == 0) {
+                    transformationName = start
+                }
+
+                if (pipelines[i][1].size() - 1 == j) {
+                    stringBuilder.append("${start}_${pipelines[i][0]} = ${pipelines[i][1][j]}.fit_transform($transformationName)")
+                            .append(StringUtils.lineFeed());
+                } else {
+                    stringBuilder.append("${transformationName}_${pipelines[i][1][j]} = ${pipelines[i][1][j]}.fit_transform($transformationName)")
+                            .append(StringUtils.lineFeed());
+                }
+                transformationName = "${transformationName}_${pipelines[i][1][j]}";
+
+            }
+
+        }
+
+    }
 
     @Override
     def generate(Object maps) {
