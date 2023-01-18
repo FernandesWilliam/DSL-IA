@@ -1,10 +1,9 @@
 package dsl
 
 import dsl.steps.DSLThrower
-import dsl.steps.comparaison.ComparisonStep
+import dsl.steps.comparison.ComparisonStep
 import dsl.steps.preparation.PreparationStep
 import dsl.steps.training.TrainingStep
-import dsl.steps.transformation.PcaConfiguration
 import dsl.steps.transformation.TransformationStep
 
 abstract class SyntaxScript extends Script implements DSLThrower{
@@ -35,7 +34,7 @@ abstract class SyntaxScript extends Script implements DSLThrower{
     }
 
     def comparison(comparisonClosure) {
-        ComparisonStep comparisonStep = new ComparisonStep()
+        ComparisonStep comparisonStep = new ComparisonStep(      )
         ClosureExtractor.extract(comparisonClosure, comparisonStep)
         this.model.comparisonStep = comparisonStep;
     }

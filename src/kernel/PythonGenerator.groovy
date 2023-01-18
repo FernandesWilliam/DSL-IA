@@ -1,6 +1,6 @@
 package kernel
 
-import dsl.steps.comparaison.ComparisonStep
+import dsl.steps.comparison.ComparisonStep
 import dsl.steps.preparation.PreparationStep
 import dsl.steps.training.TrainingStep
 import dsl.steps.transformation.TransformationStep
@@ -22,7 +22,7 @@ class PythonGenerator implements Generator {
         preparation = new PreparationGenerator(preparationStep)
         transformation = new TransformationGenerator(transformationStep);
         training = new TrainingGenerator(trainingStep, transformationStep)
-        comparison = new ComparisonGenerator(comparisonStep);
+        comparison = new ComparisonGenerator(comparisonStep,trainingStep);
     }
 
 

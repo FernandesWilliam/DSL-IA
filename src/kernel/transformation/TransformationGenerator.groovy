@@ -25,6 +25,7 @@ class TransformationGenerator implements Generator {
         if (transformationStep.standardScalerMapper) {
             generateStdScaler(transformationStep.standardScalerMapper)
         }
+        generatePipeline(transformationStep.pipelines)
 
     }
 
@@ -64,15 +65,32 @@ class TransformationGenerator implements Generator {
     }
 
 
-
-    def generatePipeline(pipelines){
+    def generatePipeline(pipelines) {
         if (pipelines.size() == 0) return
-        def processName = "X"
-        for (def entry in pipelines.entrySet()) {
+        def start = "X_train"
+        def transformationName = start
+        for (def i = 0; i < pipelines.size(); i++) {
+            stringBuilder.append("### Transformation : ${i + 1}")
+                    .append(StringUtils.lineFeed());
+            for (def j = 0; j < pipelines[i][1].size(); j++) {
+                if (pipelines.find { pipe -> pipe[0] == pipelines[i][1][j] } != null) {
+                    transformationName = "${start}_${pipelines[i][1][j]}";
+                    continue
+                } else if (j == 0) {
+                    transformationName = start
+                }
 
+                if (pipelines[i][1].size() - 1 == j) {
+                    stringBuilder.append("${start}_${pipelines[i][0]} = ${pipelines[i][1][j]}.fit_transform($transformationName)")
+                            .append(StringUtils.lineFeed());
+                } else {
+                    stringBuilder.append("${transformationName}_${pipelines[i][1][j]} = ${pipelines[i][1][j]}.fit_transform($transformationName)")
+                            .append(StringUtils.lineFeed());
+                }
+                transformationName = "${transformationName}_${pipelines[i][1][j]}";
 
-            stringBuilder.append("${entry.key} = .fit_transform()")
-                    .append(StringUtils.lineFeed())
+            }
+
         }
 
     }

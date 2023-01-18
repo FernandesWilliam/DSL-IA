@@ -20,7 +20,9 @@ transformation {
     declare std as standardScaler {}
 
     pipe t1: [pca55, pca55]
-    pipe t2: [pca55]+ t1
+    pipe t2: [t1, pca55, pca62, std]
+    pipe t3: [t1, pca55, std, pca62]
+    pipe t4: [t2,pca55, std, std]
 }
 training {
     declare gaussian1 as gaussian {
@@ -29,7 +31,7 @@ training {
         distributionParams {
             clf_nb__var_smoothing logspace(-9, 0, 5)
         }
-        transformation t1
+        transformation t5
     }
 
     declare gaussian2 as gaussian {
@@ -38,11 +40,11 @@ training {
         distributionParams {
             clf_nb__var_smoothing logspace(-9, 0, 5)
         }
-        transformation t1
+        transformation t3
     }
 }
 
 comparison {
-    compare rndForest1, gauss1 with accuracy weight 10 and time weight 3
+    compare gaussian1, gaussian2 with accuracy weight 10 and time weight 3
 }
 export "wvfwev"

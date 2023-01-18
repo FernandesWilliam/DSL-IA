@@ -15,7 +15,6 @@ class TrainingStep extends Step {
 
 
     void knn(knnClosure) {
-
         knnMapper.mapNewVariable(currentVariable, knnClosure)
     }
 

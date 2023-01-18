@@ -25,11 +25,10 @@ class ClassifierGenerator implements Generator {
         def distributionName = "distribution_${name}_param"
         def kfoldName = "kfold_${name}"
         def rsName = "rs_$name";
-        def scoring = classifier.scoring.collect { sc -> "\"$sc\":\"$sc\"" }.join(",")
 
         stringBuilder = new StringBuilder().append("$kfoldName=${classifier.kfold.function}")
                 .append(StringUtils.lineFeed())
-                .append("$pipeName= Pipeline([${transform.join(',')} ,$classifierTuple])")
+                .append("$pipeName= Pipeline([$classifierTuple])")
                 .append(StringUtils.lineFeed())
                 .append("$distributionName={${hyperParams.join(",")} }")
                 .append(StringUtils.lineFeed())
@@ -40,7 +39,6 @@ class ClassifierGenerator implements Generator {
                         "  verbose = 2, " +
                         "n_jobs = -1, " + "n_iter = 5)")
                 .append(StringUtils.lineFeed())
-                .append("scores_$name = cross_validate(rsName, Xtrain ,y_train,cv=${classifier.cv},scoring={${scoring}}) ")
     }
 
     @Override

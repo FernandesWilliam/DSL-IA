@@ -38,57 +38,72 @@ pca55 = PCA(n_components=0.55)
 pca62 = PCA(n_components=0.62)
 # SCALER TRANSFORMATION
 std = StandardScaler(copy=True, with_mean=True, with_std=True)
+### Transformation : 1
+X_train_pca55 = pca55.fit_transform(X_train)
+X_train_t1 = pca55.fit_transform(X_train_pca55)
+### Transformation : 2
+X_train_t1_pca55 = pca55.fit_transform(X_train_t1)
+X_train_t1_pca55_pca62 = pca62.fit_transform(X_train_t1_pca55)
+X_train_t2 = std.fit_transform(X_train_t1_pca55_pca62)
+### Transformation : 3
+X_train_t1_pca55 = pca55.fit_transform(X_train_t1)
+X_train_t1_pca55_std = std.fit_transform(X_train_t1_pca55)
+X_train_t3 = pca62.fit_transform(X_train_t1_pca55_std)
+### Transformation : 4
+X_train_t2_pca55 = pca55.fit_transform(X_train_t2)
+X_train_t2_pca55_std = std.fit_transform(X_train_t2_pca55)
+X_train_t4 = std.fit_transform(X_train_t2_pca55_std)
 ###### ---- TRAINING PHASE ---- ######
 ##KNN CLASSIFIER
 ##GAUSSIAN CLASSIFIER
 kfold_gaussian1=StratifiedKFold(n_splits=2, shuffle = True)
-pipe_gaussian1= Pipeline([('gaussian1_t',t),('gaussian1_1',1) ,('clf_nb', GaussianClassifier())])
+pipe_gaussian1= Pipeline([('clf_nb', GaussianClassifier())])
 distribution_gaussian1_param={"clf_nb__var_smoothing": np.logspace(-9, 0, 5) }
 rs_gaussian1 =RandomizedSearchCV(estimator= pipe_gaussian1,param_distributions = distribution_gaussian1_param, cv =kfold_gaussian1,  verbose = 2, n_jobs = -1, n_iter = 5)
-scores_gaussian1 = cross_validate(rsName, Xtrain ,y_train,cv=5,scoring={}) 
+
 
 kfold_gaussian2=StratifiedKFold(n_splits=2, shuffle = True)
-pipe_gaussian2= Pipeline([('gaussian2_t',t),('gaussian2_1',1) ,('clf_nb', GaussianClassifier())])
+pipe_gaussian2= Pipeline([('clf_nb', GaussianClassifier())])
 distribution_gaussian2_param={"clf_nb__var_smoothing": np.logspace(-9, 0, 5) }
 rs_gaussian2 =RandomizedSearchCV(estimator= pipe_gaussian2,param_distributions = distribution_gaussian2_param, cv =kfold_gaussian2,  verbose = 2, n_jobs = -1, n_iter = 5)
-scores_gaussian2 = cross_validate(rsName, Xtrain ,y_train,cv=5,scoring={}) 
+
 
 ##RANDOMFOREST CLASSIFIER
 ## # validation + comparaison
-socring = {'accuracy' : 'accuracy',
+scoring = {'accuracy' : 'accuracy',
 			'time' : 'time'}
 scores = dict()
 accuracy_coef = 10
 time_coef = 3
 
-# RNDFOREST1
-scores['rndForest1'] = {}
-scores['rndForest1']['accuracy'] = []
-scores['rndForest1']['time'] = []
+# GAUSSIAN1
+scores['gaussian1'] = {}
+scores['gaussian1']['accuracy'] = []
+scores['gaussian1']['time'] = []
 
-scores_rndForest1 = cross_validate(gs_rndForest1, X_train_t1, y_train, cv=2, scoring = scoring)
-accuracy_rndForest1 = np.mean(scores_rf['accuracy']), np.std(scores_rf['accuracy'])
-time_rndForest1 = np.mean(scores_rf['time']), np.std(scores_rf['time'])
+scores_gaussian1 = cross_validate(rs_gaussian1,X_train_null, y_train, cv=2, scoring = scoring)
+accuracy_gaussian1 = np.mean(scores_rf['accuracy']), np.std(scores_rf['accuracy'])
+time_gaussian1 = np.mean(scores_rf['time']), np.std(scores_rf['time'])
 
-scores['rndForest1']['accuracy'].append(scores_rndForest1['accuracy'])
-scores['rndForest1']['time'].append(scores_rndForest1['time'])
+scores['gaussian1']['accuracy'].append(scores_gaussian1['accuracy'])
+scores['gaussian1']['time'].append(scores_gaussian1['time'])
 
-# GAUSS1
-scores['gauss1'] = {}
-scores['gauss1']['accuracy'] = []
-scores['gauss1']['time'] = []
+# GAUSSIAN2
+scores['gaussian2'] = {}
+scores['gaussian2']['accuracy'] = []
+scores['gaussian2']['time'] = []
 
-scores_gauss1 = cross_validate(gs_gauss1, X_train_t1, y_train, cv=2, scoring = scoring)
-accuracy_gauss1 = np.mean(scores_rf['accuracy']), np.std(scores_rf['accuracy'])
-time_gauss1 = np.mean(scores_rf['time']), np.std(scores_rf['time'])
+scores_gaussian2 = cross_validate(rs_gaussian2,X_train_null, y_train, cv=2, scoring = scoring)
+accuracy_gaussian2 = np.mean(scores_rf['accuracy']), np.std(scores_rf['accuracy'])
+time_gaussian2 = np.mean(scores_rf['time']), np.std(scores_rf['time'])
 
-scores['gauss1']['accuracy'].append(scores_gauss1['accuracy'])
-scores['gauss1']['time'].append(scores_gauss1['time'])
+scores['gaussian2']['accuracy'].append(scores_gaussian2['accuracy'])
+scores['gaussian2']['time'].append(scores_gaussian2['time'])
 
 # COMPUTE GLOBAL SCORE
 models_scores = {}
-models_scores['rndForest1'] = accuracy_rndForest1 * accuracy_coef + time_rndForest1 * time_coef
-models_scores['gauss1'] = accuracy_gauss1 * accuracy_coef + time_gauss1 * time_coef
+models_scores['gaussian1'] = accuracy_gaussian1 * accuracy_coef + time_gaussian1 * time_coef
+models_scores['gaussian2'] = accuracy_gaussian2 * accuracy_coef + time_gaussian2 * time_coef
 
 # WINNER MODEL
 winner_model = max(models_scores.items(), key=operator.itemgetter(1))[0]

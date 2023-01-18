@@ -6,7 +6,7 @@ import dsl.steps.training.functions.Function
 abstract class Classifier {
 
 
-    def transformations = []
+    def transformation;
     DistributionParameters distributionParameters;
     Function kfold;
 
@@ -39,6 +39,6 @@ abstract class Classifier {
 
 
     void transformation(transformationName) {
-        transformations = transformationName
+        transformation = transformationName
     }
 }

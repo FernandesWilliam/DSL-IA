@@ -1,20 +1,32 @@
 package kernel.comparaison
 
-import dsl.steps.comparaison.ComparisonStep
+import dsl.steps.DSLThrower
+import dsl.steps.comparison.ComparisonStep
+import dsl.steps.training.TrainingStep
 import kernel.Generator
 import kernel.StringUtils
 
 
-class ComparisonGenerator implements Generator {
+class ComparisonGenerator implements Generator, DSLThrower {
     StringBuilder comparisonBuilder = new StringBuilder("## # validation + comparaison").append(StringUtils.lineFeed())
     def models = []
     def criterias = []
     def weights = []
 
-    ComparisonGenerator(ComparisonStep comparisonStep) {
+    def trainingStep;
+
+    ComparisonGenerator(ComparisonStep comparisonStep, TrainingStep trainingStep) {
         this.models = comparisonStep.toCompare;
         this.criterias = comparisonStep.criteria;
         this.weights = comparisonStep.criteriaWeight;
+        // verify that they a
+
+        for (def value : this.models) {
+            if (trainingStep.randomForestMapper.map.containsKey(value) || trainingStep.gaussianMapper.map.containsKey(value) ||
+                    trainingStep.knnMapper.map.containsKey(value)) continue
+            reject("The training algorithm : ${value} isn't declared in training phase")
+        }
+        this.trainingStep = trainingStep;
     }
 
 
@@ -32,7 +44,7 @@ class ComparisonGenerator implements Generator {
             scoringCriteria.append("\'${criteria.toString()}\' : \'$criteria\'")
             firstCriteria = false;
         }
-        comparisonBuilder.append("socring = {${scoringCriteria}}").append(StringUtils.lineFeed());
+        comparisonBuilder.append("scoring = {${scoringCriteria}}").append(StringUtils.lineFeed());
         comparisonBuilder.append("scores = dict()").append(StringUtils.lineFeed());
         for (int i = 0; i < criterias.size(); ++i) {
             comparisonBuilder.append("${criterias[i]}_coef = ${weights[i]}").append(StringUtils.lineFeed())
@@ -55,8 +67,23 @@ class ComparisonGenerator implements Generator {
         }
     }
 
+    def findModelTransformation(model) {
+        if (model in trainingStep.randomForestMapper.map) {
+            return trainingStep.randomForestMapper.map[model].transformation
+        }
+        if (model in trainingStep.gaussianMapper.map) {
+            return trainingStep.gaussianMapper.map[model].transformation
+        }
+        if (model in trainingStep.knnMapper.map) {
+            return trainingStep.knnMapper.map[model].transformation
+        }
+
+    }
+
     def generateScores(model) {
-        comparisonBuilder.append("scores_${model} = cross_validate(gs_${model}, X_train_t1, y_train, cv=2, scoring = scoring)").append(StringUtils.lineFeed())
+        def transformation = findModelTransformation(model)
+
+        comparisonBuilder.append("scores_${model} = cross_validate(rs_${model},X_train_${}, y_train, cv=2, scoring = scoring)").append(StringUtils.lineFeed())
         for (def criteria : criterias) {
             comparisonBuilder.append("${criteria}_${model} = np.mean(scores_rf['${criteria}']), np.std(scores_rf['${criteria}'])").append(StringUtils.lineFeed())
         }

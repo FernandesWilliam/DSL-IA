@@ -12,7 +12,7 @@ class TransformationStep extends Step implements DSLThrower {
     MinMaxMapper minMaxMapper = new MinMaxMapper();
     StandardScalerMapper standardScalerMapper = new StandardScalerMapper();
 
-    def pipelines = [:]
+    def pipelines = []
 
     float normalize = 0;
 
@@ -33,7 +33,7 @@ class TransformationStep extends Step implements DSLThrower {
     def isAlreadyDeclared(values) {
         for (def value : values) {
             if (pcaMapper.map.containsKey(value) || minMaxMapper.map.containsKey(value) ||
-                    standardScalerMapper.map.containsKey(values)) continue
+                    standardScalerMapper.map.containsKey(value)) continue
             return value
         }
         return true;
@@ -41,32 +41,46 @@ class TransformationStep extends Step implements DSLThrower {
     }
 
     def pipe(entrySet) {
+        def findInPipelines = { name -> pipelines.find { array -> array[0] == name } != null }
+
         for (def entry in entrySet.entrySet()) {
-            def response = isAlreadyDeclared(entry.value)
-            if (response != true) {
-                if (response in pipelines) {
-                    entry.value.removeIf{v-> response==v};
-                    entry.value = entry.value + pipelines[response]
-                } else {
-                    reject("${response} isn't declared. You should declare the variable before.")
-                }
-            }
-            if (entry.key in pipelines) {
+            if (findInPipelines(entry.key)) {
                 reject("${entry.key} is already declared.")
             }
-            // to know if there already exist a transformation
-            for (def pipeEntry in pipelines.entrySet()) {
+
+
+            def clone = entry.value.clone()
+            def response = isAlreadyDeclared(clone)
+
+            while (response != true) {
+                def isInside = findInPipelines(response)
+                if (isInside && clone[0]===  response) {
+                    clone.removeIf { v -> response == v };
+
+                }else if(isInside) {
+                    reject("${response} transformation needs to be specified in the first.")
+                }
+                else {
+                    reject("${response} isn't declared. You should declare the variable before.")
+                }
+                response = isAlreadyDeclared(clone)
+            }
+
+            // detect same transformation
+            for (def pipeEntry : pipelines) {
                 def same = 0;
-                if (pipeEntry.value.size() != entry.value.size()) break
-                for (def i = 0; i < pipeEntry.value.size(); i++) {
-                    if (!pipeEntry.value[i].equals(entry.value[i])) break
+
+                if (pipeEntry[1].size() != entry.value.size()) continue
+                for (def i = 0; i < pipeEntry[1].size(); i++) {
+                    if (!pipeEntry[1][i].equals(entry.value[i])) break
                     same++;
                 }
                 if (same == entry.value.size())
-                    reject("${entry.key} transformation already exist : ${pipeEntry.key}")
+                    reject("${entry.key} transformation already exist : ${pipeEntry[0]}")
             }
-            pipelines[entry.key] = entry.value
+            pipelines.add([entry.key, entry.value])
         }
+
     }
 
 
@@ -77,5 +91,8 @@ class TransformationStep extends Step implements DSLThrower {
             this.reject("You already defined normalized Function.Can't be append twice")
         this.normalize = value;
     }
-
 }
+
+
+
+
