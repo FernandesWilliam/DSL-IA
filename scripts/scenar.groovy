@@ -28,7 +28,7 @@ training {
         cv 5
         kfold stratified(2, true)
         distributionParams {
-            smooth logspace(-9, 0, 5)
+            smoothing logspace(-9, 0, 5)
         }
         transformation t2
     }
@@ -37,7 +37,7 @@ training {
         cv 2
         kfold stratified(2, true)
         distributionParams {
-            smooth logspace(-9, 0, 5)
+            smoothing logspace(-9, 0, 5)
         }
         transformation t3
     }
@@ -47,8 +47,8 @@ training {
         kfold stratified(2, true)
         cv 5
         distributionParams {
-            neighborsNumber randint(1, 11)
-            algo 'auto'
+            nNeighbors randint(1, 11)
+            algorithm 'auto'
         }
         transformation t1
     }
@@ -60,8 +60,8 @@ training {
             bootstrap true, false
             criterion "gini", "entropy"
             maxFeatures randint(1, 11)
-            samplesSplit randint(2, 11)
-            samplesLeaf randint(1, 11)
+            minSamplesSplit randint(2, 11)
+            minSamplesLeaf randint(1, 11)
         }
         transformation t3
         cv 5

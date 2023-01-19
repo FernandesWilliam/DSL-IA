@@ -4,8 +4,6 @@ import dsl.ClosureExtractor
 import dsl.steps.training.classifier.Classifier
 
 class RandomForestClassifier extends Classifier {
-
-
     int n_estimators;
     String class_weight;
 
@@ -23,5 +21,10 @@ class RandomForestClassifier extends Classifier {
 
     void class_weight(classWeight) {
         this.class_weight = classWeight;
+    }
+
+    @Override
+    String getPipelineName(){
+        return "clf"
     }
 }

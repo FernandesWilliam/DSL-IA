@@ -5,7 +5,6 @@ import dsl.steps.training.functions.Function
 
 abstract class Classifier {
 
-
     def transformation;
     DistributionParameters distributionParameters;
     Function kfold;
@@ -40,5 +39,9 @@ abstract class Classifier {
 
     void transformation(transformationName) {
         transformation = transformationName
+    }
+
+    String getPipelineName(){
+        return ""
     }
 }
