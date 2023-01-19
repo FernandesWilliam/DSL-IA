@@ -22,6 +22,7 @@ abstract class Classifier {
     }
 
     void cv(cv) {
+        if (cv <= 1) throw new Exception("cv should be greater than 1")
         this.cv = cv;
     }
 
