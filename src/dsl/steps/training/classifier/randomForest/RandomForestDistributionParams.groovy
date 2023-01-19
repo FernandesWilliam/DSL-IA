@@ -36,5 +36,9 @@ class RandomForestDistributionParams extends DistributionParameters {
         this.minSamplesSplit = funcObject;
     }
 
+    def propertyMissing(String propertyName) {
+        propertyName
+    }
+
 
 }

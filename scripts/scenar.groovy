@@ -45,7 +45,6 @@ training {
     declare knn1 as knn {
         cv 5
         kfold stratified(2, true)
-        cv 5
         distributionParams {
             nNeighbors randint(1, 11)
             algorithm 'auto'
@@ -56,7 +55,7 @@ training {
         class_weight 'balanced'
         kfold stratified(2, true)
         distributionParams {
-            maxDepth 5, null
+            maxDepth 5, None
             bootstrap true, false
             criterion "gini", "entropy"
             maxFeatures randint(1, 11)
