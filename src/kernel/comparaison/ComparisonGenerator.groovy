@@ -119,7 +119,7 @@ class ComparisonGenerator implements Generator, DSLThrower {
             for (def criteria : criterias) {
                 criteriaToPlot += "scores['${model}']['${criteria}'], "
             }
-            comparisonBuilder.append("plt.plot(${criteriaToPlot}marker='x', color='${randomRgbCode()}', label='${model}')").append(StringUtils.lineFeed())
+            comparisonBuilder.append("plt.scatter(${criteriaToPlot}marker='x', color='${randomRgbCode()}', label='${model}')").append(StringUtils.lineFeed())
         }
         comparisonBuilder.append("plt.title('MODELS COMPARISON')").append(StringUtils.lineFeed())
         if(criterias.size() == 2){
