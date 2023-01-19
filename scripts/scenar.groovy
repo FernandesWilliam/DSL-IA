@@ -50,7 +50,7 @@ training {
             neighborsNumber randint(1, 11)
             algo 'auto'
         }
-        transformation t2
+        transformation t1
     }
     declare rndForest1 as randomForest {
         class_weight 'balanced'

@@ -21,18 +21,21 @@ class DataGraphGenerator {
     }
 
     String generate(){
-        String msg = ""
+        String subGraph = "with g.subgraph(name='cluster_0') as d:\n"
+        subGraph += "\td.attr(style='filled', fillcolor='antiquewhite1')\n"
+        subGraph += "\td.attr(rank='same')\n"
         if(filePath != null) {
-            msg += "g.edge('$filePath','data')\n"
-            msg += preprocessingGraphGenerator.generate()
-            msg += "g.edge('PreProssDATA','split')\n"
-            msg += "g.edge('split','PreProssTrain')\n"
-            msg += "g.edge('split','PreProssTest')\n"
+            subGraph += "\td.edge('$filePath','data')\n"
+            subGraph += preprocessingGraphGenerator.generate()
+            subGraph += "\td.edge('PreProssDATA','split')\n"
+            subGraph += "\td.edge('split','PreProssTrain')\n"
+            subGraph += "\td.edge('split','PreProssTest')\n"
         }else{
-            msg += "g.edge('$trainPath','train')\n"
-            msg += "g.edge('$testPath','test')\n"
-            msg += preprocessingGraphGenerator.generate()
+            subGraph += "\td.edge('$trainPath','train')\n"
+            subGraph += "\td.edge('$testPath','test')\n"
+            subGraph += preprocessingGraphGenerator.generate()
         }
-        return msg;
+        subGraph += "\td.attr(label='Data preProcess')\n"
+        return subGraph;
     }
 }

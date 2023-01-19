@@ -24,7 +24,9 @@ class GraphResultGenerator{
         String graph ="from graphviz import Digraph\n" +
                 "\n" +
                 "g = Digraph('G', filename='cluster.gv')\n"+
-                "colors = ['green','red','blue','orange']\n";
+                "g.attr(rankdir='LR')\n"+
+                "g.node_attr.update(style='filled', fillcolor='white', shape='box')\n"+
+                "colors = ['green','red','blue','orange']\n"
         graph += dataGenerator.generate();
         graph += transformationGraphGenerator.generate()
         graph += trainingGraphGenerator.generate();

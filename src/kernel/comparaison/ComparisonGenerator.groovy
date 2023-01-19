@@ -37,16 +37,6 @@ class ComparisonGenerator implements Generator, DSLThrower {
      * to generate scoring criteria object, scores where to store scores for each model and coefs for each criteria
      */
     def generateScoreNeededVariables() {
-        def scoringCriteria = new StringBuilder()
-        boolean firstCriteria = true;
-        for (def criteria : criterias) {
-            if (!firstCriteria) {
-                scoringCriteria.append(",\n").append(StringUtils.tab()).append(StringUtils.tab()).append(StringUtils.tab())
-            }
-            println(criteria)
-            scoringCriteria.append("\'${criteria.toString()}\' : \'$criteria\'")
-            firstCriteria = false;
-        }
         comparisonBuilder.append("scoring = {'acc' : 'accuracy'}").append(StringUtils.lineFeed());
         comparisonBuilder.append("scores = dict()").append(StringUtils.lineFeed());
         for (int i = 0; i < criterias.size(); ++i) {
