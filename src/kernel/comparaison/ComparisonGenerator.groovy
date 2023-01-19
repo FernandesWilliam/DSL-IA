@@ -5,11 +5,11 @@ import dsl.steps.comparison.ComparisonStep
 import dsl.steps.training.TrainingStep
 import dsl.steps.transformation.TransformationStep
 import kernel.Generator
-import kernel.StringUtils
+import kernel.stringutils.StringUtilsJupyter
 
 
 class ComparisonGenerator implements Generator, DSLThrower {
-    StringBuilder comparisonBuilder = new StringBuilder("## # validation + comparaison").append(StringUtils.lineFeed())
+    StringBuilder comparisonBuilder = new StringBuilder("## # validation + comparaison").append(StringUtilsJupyter.lineFeed())
     def models = []
     def criterias = []
     def weights = []
@@ -41,32 +41,32 @@ class ComparisonGenerator implements Generator, DSLThrower {
         boolean firstCriteria = true;
         for (def criteria : criterias) {
             if (!firstCriteria) {
-                scoringCriteria.append(",\n").append(StringUtils.tab()).append(StringUtils.tab()).append(StringUtils.tab())
+                scoringCriteria.append(StringUtilsJupyter.lineFeed()).append(StringUtilsJupyter.tab()).append(StringUtilsJupyter.tab()).append(StringUtilsJupyter.tab())
             }
             println(criteria)
             scoringCriteria.append("\'${criteria.toString()}\' : \'$criteria\'")
             firstCriteria = false;
         }
-        comparisonBuilder.append("scoring = {${scoringCriteria}}").append(StringUtils.lineFeed());
-        comparisonBuilder.append("scores = dict()").append(StringUtils.lineFeed());
+        comparisonBuilder.append("scoring = {${scoringCriteria}}").append(StringUtilsJupyter.lineFeed());
+        comparisonBuilder.append("scores = dict()").append(StringUtilsJupyter.lineFeed());
         for (int i = 0; i < criterias.size(); ++i) {
-            comparisonBuilder.append("${criterias[i]}_coef = ${weights[i]}").append(StringUtils.lineFeed())
+            comparisonBuilder.append("${criterias[i]}_coef = ${weights[i]}").append(StringUtilsJupyter.lineFeed())
         }
     }
 
     def generateModelsValidation() {
         for (def model : models) {
-            comparisonBuilder.append(StringUtils.lineFeed()).append("# ${model.toUpperCase()}").append(StringUtils.lineFeed())
+            comparisonBuilder.append(StringUtilsJupyter.lineFeed()).append("# ${model.toUpperCase()}").append(StringUtilsJupyter.lineFeed())
             initScoresStorageForModel(model);
-            comparisonBuilder.append(StringUtils.lineFeed());
+            comparisonBuilder.append(StringUtilsJupyter.lineFeed());
             generateScores(model);
         }
     }
 
     def initScoresStorageForModel(model) {
-        comparisonBuilder.append("scores['${model}'] = {}").append(StringUtils.lineFeed())
+        comparisonBuilder.append("scores['${model}'] = {}").append(StringUtilsJupyter.lineFeed())
         for (def criteria : criterias) {
-            comparisonBuilder.append("scores['${model}']['${criteria}'] = []").append(StringUtils.lineFeed())
+            comparisonBuilder.append("scores['${model}']['${criteria}'] = []").append(StringUtilsJupyter.lineFeed())
         }
     }
 
@@ -89,19 +89,19 @@ class ComparisonGenerator implements Generator, DSLThrower {
             reject("$modelObject.transformation transformation doesn't exist")
         }
 
-        comparisonBuilder.append("scores_${model} = cross_validate(rs_${model},X_train_${modelObject.transformation}, y_train, cv=${modelObject.cv}, scoring = scoring)").append(StringUtils.lineFeed())
+        comparisonBuilder.append("scores_${model} = cross_validate(rs_${model},X_train_${modelObject.transformation}, y_train, cv=${modelObject.cv}, scoring = scoring)").append(StringUtilsJupyter.lineFeed())
         for (def criteria : criterias) {
-            comparisonBuilder.append("${criteria}_${model} = np.mean(scores_rf['${criteria}']), np.std(scores_rf['${criteria}'])").append(StringUtils.lineFeed())
+            comparisonBuilder.append("${criteria}_${model} = np.mean(scores_rf['${criteria}']), np.std(scores_rf['${criteria}'])").append(StringUtilsJupyter.lineFeed())
         }
-        comparisonBuilder.append(StringUtils.lineFeed())
+        comparisonBuilder.append(StringUtilsJupyter.lineFeed())
         for (def criteria : criterias) {
-            comparisonBuilder.append("scores['${model}']['${criteria}'].append(scores_${model}['${criteria}'])").append(StringUtils.lineFeed());
+            comparisonBuilder.append("scores['${model}']['${criteria}'].append(scores_${model}['${criteria}'])").append(StringUtilsJupyter.lineFeed());
         }
     }
 
     def generateGlobalsScoresComputation() {
-        comparisonBuilder.append(StringUtils.lineFeed()).append("# COMPUTE GLOBAL SCORE").append(StringUtils.lineFeed());
-        comparisonBuilder.append("models_scores = {}").append(StringUtils.lineFeed());
+        comparisonBuilder.append(StringUtilsJupyter.lineFeed()).append("# COMPUTE GLOBAL SCORE").append(StringUtilsJupyter.lineFeed());
+        comparisonBuilder.append("models_scores = {}").append(StringUtilsJupyter.lineFeed());
         for (def model : models) {
             boolean firstCriteria = true;
             String computation = "";
@@ -112,14 +112,14 @@ class ComparisonGenerator implements Generator, DSLThrower {
                 computation += "${criteria}_${model} * ${criteria}_coef";
                 firstCriteria = false;
             }
-            comparisonBuilder.append("models_scores['${model}'] = ${computation}").append(StringUtils.lineFeed());
+            comparisonBuilder.append("models_scores['${model}'] = ${computation}").append(StringUtilsJupyter.lineFeed());
         }
     }
 
     def generateWinningModel() {
-        comparisonBuilder.append(StringUtils.lineFeed()).append("# WINNER MODEL").append(StringUtils.lineFeed())
-        comparisonBuilder.append("winner_model = max(models_scores.items(), key=operator.itemgetter(1))[0]").append(StringUtils.lineFeed())
-        comparisonBuilder.append("print(\"winner model :\",winner_model)")
+        comparisonBuilder.append(StringUtilsJupyter.lineFeed()).append("# WINNER MODEL").append(StringUtilsJupyter.lineFeed())
+        comparisonBuilder.append("winner_model = max(models_scores.items(), key=operator.itemgetter(1))[0]").append(StringUtilsJupyter.lineFeed())
+        comparisonBuilder.append("print(\'winner model :\',winner_model)")
     }
 
 

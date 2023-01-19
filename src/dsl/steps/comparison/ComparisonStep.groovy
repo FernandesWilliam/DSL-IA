@@ -5,6 +5,10 @@ import dsl.steps.training.TrainingStep
 class ComparisonStep {
 
 
+    def toCompare = []
+    def criteria = []
+    def criteriaWeight = []
+
     def compare(... args) {
         toCompare = args;
         { -> }
@@ -31,4 +35,3 @@ class ComparisonStep {
 
 
 }
-

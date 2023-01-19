@@ -5,6 +5,7 @@ import dsl.steps.preparation.PreparationStep
 import kernel.Generator
 import kernel.PythonGenerator
 import kernel.notebook.MarkDownBlockGenerator
+import kernel.stringutils.IStringUtils
 
 class PreparationGenerator implements Generator {
 
@@ -13,7 +14,7 @@ class PreparationGenerator implements Generator {
     ImporterGenerator importerGenerator;
     TrainTestSplitterGenerator trainTestSplitterGenerator
 
-    PreparationGenerator(PreparationStep preparationStep) {
+    PreparationGenerator(PreparationStep preparationStep, IStringUtils stringUtils) {
 
         if (preparationStep.filePath) {
             importerGenerator = new ImporterGenerator(preparationStep.filePath)

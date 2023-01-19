@@ -3,7 +3,7 @@ package kernel.training
 import dsl.steps.training.classifier.knn.KnnClassifier
 import dsl.steps.training.functions.Function
 import kernel.Generator
-import kernel.notebook.CodeBlockGenerator
+import kernel.stringutils.StringUtilsJupyter
 
 class KnnGenerator implements Generator {
     //  kfold stratified(2, true)
@@ -50,16 +50,16 @@ class KnnGenerator implements Generator {
         def scoring = knnClassifier.scoring.collect { sc -> "\'$sc\':\'$sc\'" }.join(",")
         stringBuilder = new StringBuilder()
                 .append("$kfoldName=${knnClassifier.kfold.function}")
-                .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed(2))
                 .append("$pipeName= Pipeline([${transform.join(',')} ,('clf_knn', KNeighborsClassifier())])")
                 .append("$distributionName={${hyperParams.join(",")} }")
-                .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed(2))
                 .append("$rsName =RandomizedSearchCV(estimator= $pipeName," +
                         "param_distributions = $distributionName, " +
                         "cv =$kfoldName," +
                         "  verbose = 2, " +
                         "n_jobs = -1, " + "n_iter = 5)")
-                .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed(2))
                 .append("scores_$name = cross_validate(rsName, Xtrain ,y_train,cv=${knnClassifier.cv},scoring={${scoring}}) ")
     }
 

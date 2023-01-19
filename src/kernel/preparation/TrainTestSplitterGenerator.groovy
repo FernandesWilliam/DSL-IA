@@ -1,7 +1,7 @@
 package kernel.preparation
 
 import kernel.Generator
-import kernel.notebook.CodeBlockGenerator
+import kernel.stringutils.StringUtilsJupyter
 
 class TrainTestSplitterGenerator implements Generator {
 
@@ -10,18 +10,18 @@ class TrainTestSplitterGenerator implements Generator {
 
     TrainTestSplitterGenerator(trainingSize, seed) {
         trainTestBuilder
-                .append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed())
                 .append("X,y = dataset.drop(['label'], axis = 1), dataset['label']")
-                .append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed())
                 .append("X_train, X_test, y_train, y_test=" +
                         "train_test_split(X, y,test_size=${trainingSize},random_state=${seed})")
     }
 
     TrainTestSplitterGenerator() {
         trainTestBuilder
-                .append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed())
                 .append("X_train, y_train = dataTrainSet.drop(['label'], axis = 1), dataTrainSet['label']")
-                .append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed())
                 .append("X_test, y_test = dataTestSet.drop(['label'], axis = 1), dataTestSet['label']")
     }
 

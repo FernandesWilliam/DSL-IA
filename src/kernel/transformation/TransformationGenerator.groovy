@@ -5,14 +5,14 @@ import dsl.steps.transformation.PcaMapper
 import dsl.steps.transformation.StandardScalerMapper
 import dsl.steps.transformation.TransformationStep
 import kernel.Generator
-import kernel.notebook.CodeBlockGenerator
+import kernel.stringutils.StringUtilsJupyter
 
 class TransformationGenerator implements Generator {
 
     StringBuilder stringBuilder;
 
     TransformationGenerator(TransformationStep transformationStep) {
-        stringBuilder = new StringBuilder("###### ---- TRANSFORMATION PHASE ---- ######").append(CodeBlockGenerator.NEWLINE)
+        stringBuilder = new StringBuilder("###### ---- TRANSFORMATION PHASE ---- ######").append(StringUtilsJupyter.lineFeed())
 
         if (transformationStep.normalize != 0) {
             generateNormalize(transformationStep.normalize)
@@ -32,19 +32,18 @@ class TransformationGenerator implements Generator {
 
 
     def generateNormalize(float normalizeValue) {
-        stringBuilder.append("# Normalization TRANSFORMATION").append(CodeBlockGenerator.NEWLINE)
-        stringBuilder.append("X_train = X_train / 255.").append(CodeBlockGenerator.NEWLINE)
-        stringBuilder.append("X_test = X_test / 255.")
-                        .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
+        stringBuilder.append("# Normalization TRANSFORMATION").append(StringUtilsJupyter.lineFeed())
+        stringBuilder.append("X_train = X_train / 255.").append(StringUtilsJupyter.lineFeed())
+        stringBuilder.append("X_test = X_test / 255.").append(StringUtilsJupyter.lineFeed(2))
 
     }
 
     def generateMinMax(MinMaxMapper minMaxMapper) {
         if (minMaxMapper.map.size() == 0) return
-        stringBuilder.append("# MinMax TRANSFORMATION").append(CodeBlockGenerator.NEWLINE)
+        stringBuilder.append("# MinMax TRANSFORMATION").append(StringUtilsJupyter.lineFeed())
         for (def entry in minMaxMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = MinMaxScaler(feature_range=(${entry.value.feature_range.join(',')}),clip=${entry.value.clip.toString().capitalize()},copy=${entry.value.copy.toString().capitalize()})")
-                    .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
+                    .append(StringUtilsJupyter.lineFeed(2))
 
 
         }
@@ -53,23 +52,21 @@ class TransformationGenerator implements Generator {
     def generatePCA(PcaMapper pcaMapper) {
 
         if (pcaMapper.map.size() == 0) return
-        stringBuilder.append("# PCA TRANSFORMATION").append(CodeBlockGenerator.NEWLINE)
-        if (pcaMapper.map.size() == 0) return
-        stringBuilder.append("# PCA TRANSFORMATION").append(StringUtils.lineFeed())
+        stringBuilder.append("# PCA TRANSFORMATION").append(StringUtilsJupyter.lineFeed())
         for (def entry in pcaMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = PCA(n_components=${entry.value.n_components})")
-                    .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
+                    .append(StringUtilsJupyter.lineFeed(2))
 
         }
     }
 
     def generateStdScaler(StandardScalerMapper stdScalerMapper){
         if (stdScalerMapper.map.size() == 0) return
-        stringBuilder.append("# STANDARDSCALER TRANSFORMATION").append(CodeBlockGenerator.NEWLINE)
+        stringBuilder.append("# STANDARDSCALER TRANSFORMATION").append(StringUtilsJupyter.lineFeed())
 
         for (def entry in stdScalerMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = StandardScaler(copy=${entry.value.copy.toString().capitalize()}, with_mean=${entry.value.with_mean.toString().capitalize()}, with_std=${entry.value.with_std.toString().capitalize()})")
-                    .append(CodeBlockGenerator.NEWLINE).append(CodeBlockGenerator.NEWLINE)
+                    .append(StringUtilsJupyter.lineFeed(2))
 
         }
     }
@@ -78,13 +75,12 @@ class TransformationGenerator implements Generator {
     def generatePipeline(pipelines) {
         if (pipelines.size() == 0) return
         stringBuilder.append(" ## ---- TRANSFORMATION PROCESSING ---- ##")
-                .append(StringUtils.lineFeed());
-
+                .append(StringUtilsJupyter.lineFeed());
         def start = "X_train"
         def transformationName = start
         for (def i = 0; i < pipelines.size(); i++) {
             stringBuilder.append("### Transformation : ${i + 1}")
-                    .append(StringUtils.lineFeed());
+                    .append(StringUtilsJupyter.lineFeed());
             for (def j = 0; j < pipelines[i][1].size(); j++) {
                 if (pipelines.find { pipe -> pipe[0] == pipelines[i][1][j] } != null) {
                     transformationName = "${start}_${pipelines[i][1][j]}";
@@ -95,10 +91,10 @@ class TransformationGenerator implements Generator {
 
                 if (pipelines[i][1].size() - 1 == j) {
                     stringBuilder.append("${start}_${pipelines[i][0]} = ${pipelines[i][1][j]}.fit_transform($transformationName)")
-                            .append(StringUtils.lineFeed());
+                            .append(StringUtilsJupyter.lineFeed());
                 } else {
                     stringBuilder.append("${transformationName}_${pipelines[i][1][j]} = ${pipelines[i][1][j]}.fit_transform($transformationName)")
-                            .append(StringUtils.lineFeed());
+                            .append(StringUtilsJupyter.lineFeed());
                 }
                 transformationName = "${transformationName}_${pipelines[i][1][j]}";
 

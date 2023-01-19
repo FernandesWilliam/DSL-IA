@@ -1,7 +1,7 @@
 package kernel.preparation
 
 import kernel.Generator
-import kernel.notebook.CodeBlockGenerator
+import kernel.stringutils.StringUtilsJupyter
 
 class ImporterGenerator implements Generator {
 
@@ -9,35 +9,35 @@ class ImporterGenerator implements Generator {
 
     ImporterGenerator(filePath) {
             importBuilder
-                    .append(CodeBlockGenerator.NEWLINE)
+                    .append(StringUtilsJupyter.lineFeed())
                     .append("import pandas as pd")
-                    .append(CodeBlockGenerator.NEWLINE)
+                    .append(StringUtilsJupyter.lineFeed())
                     .append("try:")
-                    .append(CodeBlockGenerator.NEWLINE)
+                    .append(StringUtilsJupyter.lineFeed())
                     .append("\\t")
                     .append("dataset = pd.read_csv(\'${filePath}\')")
-                    .append(CodeBlockGenerator.NEWLINE)
+                    .append(StringUtilsJupyter.lineFeed())
                     .append("except FileNotFoundError:")
-                    .append(CodeBlockGenerator.NEWLINE)
+                    .append(StringUtilsJupyter.lineFeed())
                     .append("\\t")
                     .append("print('The path of the dataset is invalid')")
     }
 
     ImporterGenerator(trainPath, testPath) {
         importBuilder
-                .append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed())
                 .append("import pandas as pd")
-                .append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed())
                 .append("try:")
-                .append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed())
                 .append("\\t")
                 .append("dataTrainSet = pd.read_csv(\'${trainPath}\')")
-                .append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed())
                 .append("\\t")
                 .append("dataTestSet = pd.read_csv(\'${testPath}\')")
-                .append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed())
                 .append("except FileNotFoundError:")
-                .append(CodeBlockGenerator.NEWLINE)
+                .append(StringUtilsJupyter.lineFeed())
                 .append("\\t")
                 .append("print(\'The path of the dataset is invalid\')")
     }

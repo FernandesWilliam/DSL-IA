@@ -1,7 +1,8 @@
 package kernel
 
-interface Generator {
+import kernel.stringutils.IStringUtils
 
+interface Generator {
 
     def generate(maps);
 

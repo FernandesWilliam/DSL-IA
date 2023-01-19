@@ -1,7 +1,7 @@
 package dsl.steps.preparation
 
 import dsl.steps.DSLThrower
-import kernel.StringUtils
+import kernel.stringutils.StringUtilsJupyter
 
 
 class Preprocessing implements DSLThrower {
@@ -24,11 +24,11 @@ class Preprocessing implements DSLThrower {
         if (!validQ1 || !validQ3 || !validGap) {
             def msg = "";
             if (!validQ1)
-                msg += "The first quartile should be higher than 0" + StringUtils.lineFeed()
+                msg += "The first quartile should be higher than 0" + StringUtilsJupyter.lineFeed()
             if (!validQ3)
-                msg += "The last quartile should be lower than 1" + StringUtils.lineFeed()
+                msg += "The last quartile should be lower than 1" + StringUtilsJupyter.lineFeed()
             if (!validGap)
-                msg += " Should have q1 < q3" + StringUtils.lineFeed()
+                msg += " Should have q1 < q3" + StringUtilsJupyter.lineFeed()
 
             this.reject(msg)
         }

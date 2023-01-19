@@ -5,7 +5,6 @@ import kernel.Generator;
 public class CodeBlockGenerator implements Generator {
     private final int nb;
     private final String source;
-    public static final String NEWLINE= "\\n\",\"";
 
     public CodeBlockGenerator(int nb, String source) {
         this.nb = nb;

@@ -2,7 +2,7 @@ package dsl.steps.preparation
 
 import dsl.ClosureExtractor
 import dsl.steps.DSLThrower
-import kernel.StringUtils
+import kernel.stringutils.StringUtilsJupyter
 
 class PreparationStep implements DSLThrower{
 
@@ -26,10 +26,10 @@ class PreparationStep implements DSLThrower{
     void train(String trainFilePath) {
         String errorMsg = "";
         if(filePath != null) {
-            errorMsg += "data file already exist above => "+filePath + StringUtils.lineFeed();
+            errorMsg += "data file already exist above => "+filePath + StringUtilsJupyter.lineFeed();
         }
         if(trainFilePath.isEmpty()) {
-            errorMsg += "data filePath is invalid [\""+trainFilePath+"\"]" + StringUtils.lineFeed();
+            errorMsg += "data filePath is invalid [\""+trainFilePath+"\"]" + StringUtilsJupyter.lineFeed();
         }
         if(!errorMsg.isEmpty()) {
             reject(errorMsg);
@@ -40,13 +40,13 @@ class PreparationStep implements DSLThrower{
     void test(String testFilePath) {
         String errorMsg = "";
         if(filePath != null) {
-            errorMsg += "data file already exist above => "+filePath + StringUtils.lineFeed();
+            errorMsg += "data file already exist above => "+filePath + StringUtilsJupyter.lineFeed();
         }
         if(trainPath == null) {
-            errorMsg += "train data file not defined before" + StringUtils.lineFeed();
+            errorMsg += "train data file not defined before" + StringUtilsJupyter.lineFeed();
         }
         if(testFilePath.isEmpty()) {
-            errorMsg += "data filePath is invalid [\""+testFilePath+"\"]" + StringUtils.lineFeed();
+            errorMsg += "data filePath is invalid [\""+testFilePath+"\"]" + StringUtilsJupyter.lineFeed();
         }
         if(!errorMsg.isEmpty()) {
             reject(errorMsg);
