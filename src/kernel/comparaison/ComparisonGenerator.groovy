@@ -81,7 +81,7 @@ class ComparisonGenerator implements Generator, DSLThrower {
 
         comparisonBuilder.append("scores_${model} = cross_validate(rs_${model},X_train_${modelObject.transformation}, y_train, cv=${modelObject.cv}, scoring = scoring)").append(StringUtils.lineFeed())
         for (def criteria : criterias) {
-            comparisonBuilder.append("${criteria}_${model} = np.mean(scores_${model}['${criteria}']), np.std(scores_${model}['${criteria}'])").append(StringUtils.lineFeed())
+            comparisonBuilder.append("${criteria}_${model} = np.mean(scores_${model}['${criteria}'])").append(StringUtils.lineFeed())
         }
         comparisonBuilder.append(StringUtils.lineFeed())
         for (def criteria : criterias) {
@@ -133,6 +133,49 @@ class ComparisonGenerator implements Generator, DSLThrower {
         comparisonBuilder.append("plt.show()").append(StringUtils.lineFeed());
     }
 
+    def generateComparisonTable(){
+        comparisonBuilder.append(StringUtils.lineFeed()).append(StringUtils.lineFeed()).append("# COMPARISON TABLE").append(StringUtils.lineFeed())
+
+        for(def model: models)
+            comparisonBuilder.append("models_scores['${model}'] = np.round(models_scores['${model}'],3)").append(StringUtils.lineFeed())
+
+
+        for (def criteria : criterias) {
+            for(def model: models)
+                comparisonBuilder.append("scores['${model}']['${criteria}'] = np.round(np.average(scores['${model}']['${criteria}']),3)").append(StringUtils.lineFeed())
+        }
+
+        comparisonBuilder.append(StringUtils.lineFeed())
+                .append("fig, ax = plt.subplots()").append(StringUtils.lineFeed())
+                .append("fig.patch.set_visible(False)").append(StringUtils.lineFeed())
+                .append("ax.axis('off')").append(StringUtils.lineFeed())
+                .append("ax.axis('tight')").append(StringUtils.lineFeed())
+                .append("df = pd.DataFrame([")
+
+        for (def criteria : criterias) {
+            comparisonBuilder.append("[\"${criteria}\", ")
+            for(def model: models)
+                comparisonBuilder.append("scores['${model}']['${criteria}'],")
+            comparisonBuilder.setLength(comparisonBuilder.length() - 1)
+            comparisonBuilder.append("],")
+        }
+        comparisonBuilder.append("[\"total\", ")
+
+        for(def model: models)
+            comparisonBuilder.append("models_scores['${model}'], ")
+        comparisonBuilder.setLength(comparisonBuilder.length() - 1)
+        comparisonBuilder.append("]],columns=[\"metric\",")
+
+        for(def model: models)
+            comparisonBuilder.append("\"${model}\",")
+        comparisonBuilder.setLength(comparisonBuilder.length() - 1)
+        comparisonBuilder.append("])").append(StringUtils.lineFeed())
+                .append("ax.table(cellText=df.values, colLabels=df.columns, loc='center')").append(StringUtils.lineFeed())
+                .append("fig.tight_layout()").append(StringUtils.lineFeed())
+                .append("plt.show()").append(StringUtils.lineFeed())
+
+    }
+
     def randomRgbCode() {
         def rgb = new Random().nextInt(1<<24) // A random 24-bit integer
         return '#' + Integer.toString(rgb, 16).padLeft(6, '0')
@@ -146,6 +189,9 @@ class ComparisonGenerator implements Generator, DSLThrower {
         generateGlobalsScoresComputation();
         generateWinningModel();
         generateComparisonChart();
+        generateComparisonTable()
         return comparisonBuilder
     }
 }
+
+

@@ -42,7 +42,9 @@ public class ImportsGenerator implements Generator {
                 .append("from sklearn.gaussian_process import GaussianProcessClassifier").append(StringUtils.lineFeed())
                 .append("from sklearn.gaussian_process.kernels import RBF").append(StringUtils.lineFeed())
                 .append("from sklearn.naive_bayes import GaussianNB").append(StringUtils.lineFeed())
+                .append("import matplotlib.pyplot as plt").append(StringUtils.lineFeed())
                 .append("import operator").append(StringUtils.lineFeed());
 
     }
+
 }
