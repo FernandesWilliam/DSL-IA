@@ -85,7 +85,7 @@ class ComparisonGenerator implements Generator, DSLThrower {
         }
         comparisonBuilder.append(StringUtils.lineFeed())
         for (def criteria : criterias) {
-            comparisonBuilder.append("scores['${model}']['${criteria}'].append(scores_${model}['${criteria}'])").append(StringUtils.lineFeed());
+            comparisonBuilder.append("scores['${model}']['${criteria}'] = scores_${model}['${criteria}']").append(StringUtils.lineFeed());
         }
     }
 
@@ -93,14 +93,14 @@ class ComparisonGenerator implements Generator, DSLThrower {
         comparisonBuilder.append(StringUtils.lineFeed()).append("# COMPUTE GLOBAL SCORE").append(StringUtils.lineFeed());
         comparisonBuilder.append("models_scores = {}").append(StringUtils.lineFeed());
         for (def model : models) {
-            boolean firstCriteria = true;
-            String computation = "";
+            String computation = "1";
             for (def criteria : criterias) {
-                if (!firstCriteria) {
-                    computation += " + "
+                if(criteria in ['fit_time']){
+                    computation += " * (${criteria}_coef / (1+${criteria}_${model}))"
                 }
-                computation += "${criteria}_${model} * ${criteria}_coef";
-                firstCriteria = false;
+                else{
+                    computation += " * (${criteria}_${model} * ${criteria}_coef)"
+                }
             }
             comparisonBuilder.append("models_scores['${model}'] = ${computation}").append(StringUtils.lineFeed());
         }
@@ -112,6 +112,32 @@ class ComparisonGenerator implements Generator, DSLThrower {
         comparisonBuilder.append("print(\"winner model :\",winner_model)").append(StringUtils.lineFeed())
     }
 
+    def generateComparisonChart() {
+        comparisonBuilder.append(StringUtils.lineFeed()).append(StringUtils.lineFeed()).append("# COMPARISON CHART").append(StringUtils.lineFeed())
+        for(def model : models) {
+            def criteriaToPlot = "";
+            for (def criteria : criterias) {
+                criteriaToPlot += "scores['${model}']['${criteria}'], "
+            }
+            comparisonBuilder.append("plt.plot(${criteriaToPlot}marker='x', color='${randomRgbCode()}', label='${model}')").append(StringUtils.lineFeed())
+        }
+        comparisonBuilder.append("plt.title('MODELS COMPARISON')").append(StringUtils.lineFeed())
+        if(criterias.size() == 2){
+            comparisonBuilder.append("plt.xlabel('accuracy')").append(StringUtils.lineFeed())
+            comparisonBuilder.append("plt.ylabel('fit_time(sec)')").append(StringUtils.lineFeed())
+        }
+        else{
+            comparisonBuilder.append("plt.ylabel('${criterias[0]}')").append(StringUtils.lineFeed())
+        }
+        comparisonBuilder.append("plt.legend(loc='lower right', bbox_to_anchor=(1.3,0))").append(StringUtils.lineFeed())
+        comparisonBuilder.append("plt.show()").append(StringUtils.lineFeed());
+    }
+
+    def randomRgbCode() {
+        def rgb = new Random().nextInt(1<<24) // A random 24-bit integer
+        return '#' + Integer.toString(rgb, 16).padLeft(6, '0')
+    }
+
 
     @Override
     def generate(Object maps) {
@@ -119,6 +145,7 @@ class ComparisonGenerator implements Generator, DSLThrower {
         generateModelsValidation();
         generateGlobalsScoresComputation();
         generateWinningModel();
+        generateComparisonChart();
         return comparisonBuilder
     }
 }
