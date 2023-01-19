@@ -1,5 +1,5 @@
 preparation {
-    fetch "../input/digit-recognizer/train1.csv"
+    fetch "../input/digit-recognizer/train.csv"
 
     preprocessing {
         rmNull
@@ -34,7 +34,7 @@ training {
     }
 
     declare gaussian2 as gaussian {
-        cv 1
+        cv 2
         kfold stratified(2, true)
         distributionParams {
             smooth logspace(-9, 0, 5)
@@ -71,6 +71,6 @@ training {
 }
 
 comparison {
-    compare gaussian1, gaussian2,knn1 with accuracy weight 10 and time weight 3
+    compare gaussian1, gaussian2,knn1 with test_acc weight 10 and fit_time weight 3
 }
 export "wvfwev"

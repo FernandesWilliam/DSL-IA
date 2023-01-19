@@ -47,7 +47,7 @@ class ComparisonGenerator implements Generator, DSLThrower {
             scoringCriteria.append("\'${criteria.toString()}\' : \'$criteria\'")
             firstCriteria = false;
         }
-        comparisonBuilder.append("scoring = {${scoringCriteria}}").append(StringUtils.lineFeed());
+        comparisonBuilder.append("scoring = {'acc' : 'accuracy'}").append(StringUtils.lineFeed());
         comparisonBuilder.append("scores = dict()").append(StringUtils.lineFeed());
         for (int i = 0; i < criterias.size(); ++i) {
             comparisonBuilder.append("${criterias[i]}_coef = ${weights[i]}").append(StringUtils.lineFeed())
@@ -91,7 +91,7 @@ class ComparisonGenerator implements Generator, DSLThrower {
 
         comparisonBuilder.append("scores_${model} = cross_validate(rs_${model},X_train_${modelObject.transformation}, y_train, cv=${modelObject.cv}, scoring = scoring)").append(StringUtils.lineFeed())
         for (def criteria : criterias) {
-            comparisonBuilder.append("${criteria}_${model} = np.mean(scores_rf['${criteria}']), np.std(scores_rf['${criteria}'])").append(StringUtils.lineFeed())
+            comparisonBuilder.append("${criteria}_${model} = np.mean(scores_${model}['${criteria}']), np.std(scores_${model}['${criteria}'])").append(StringUtils.lineFeed())
         }
         comparisonBuilder.append(StringUtils.lineFeed())
         for (def criteria : criterias) {
@@ -119,7 +119,7 @@ class ComparisonGenerator implements Generator, DSLThrower {
     def generateWinningModel() {
         comparisonBuilder.append(StringUtils.lineFeed()).append("# WINNER MODEL").append(StringUtils.lineFeed())
         comparisonBuilder.append("winner_model = max(models_scores.items(), key=operator.itemgetter(1))[0]").append(StringUtils.lineFeed())
-        comparisonBuilder.append("print(\"winner model :\",winner_model)")
+        comparisonBuilder.append("print(\"winner model :\",winner_model)").append(StringUtils.lineFeed())
     }
 
 

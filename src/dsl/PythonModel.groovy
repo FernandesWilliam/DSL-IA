@@ -23,9 +23,6 @@ class PythonModel {
                 comparisonStep)
 
         file.text = generator.generate([:])
-
-
-        file.text = generator.generate([:])
         GraphResultGenerator graphGenerator =  new GraphResultGenerator(preparationStep, trainingStep, transformationStep)
         graphFile.text = graphGenerator.generate();
 
