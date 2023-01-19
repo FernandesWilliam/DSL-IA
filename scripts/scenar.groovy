@@ -70,6 +70,6 @@ training {
 }
 
 comparison {
-    compare gaussian1, gaussian2,knn1 with test_acc weight 10 and fit_time weight 3
+    compare gaussian1, gaussian2,knn1 with test_acc weight 10
 }
 export "wvfwev"

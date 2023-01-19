@@ -1,10 +1,11 @@
 package dsl.steps.comparison
 
+import dsl.steps.DSLThrower
 import dsl.steps.training.TrainingStep
 
-class ComparisonStep {
+class ComparisonStep implements DSLThrower{
 
-
+    def supportedCriteria = ['fit_time', 'test_acc'];
     def toCompare = []
     def criteria = []
     def criteriaWeight = []
@@ -24,15 +25,20 @@ class ComparisonStep {
     }
 
     def with(less) {
-        criteria.add(less);
+        checkAndPushCriteria(less);
         { -> }
     }
 
     def and(args) {
-        criteria.add(args);
+        checkAndPushCriteria(args);
         { -> }
     }
 
-
+    private def checkAndPushCriteria(criteria) {
+        if(!(criteria in supportedCriteria)){
+            reject("criteria ${criteria} not supported.\n > supported criteria ${supportedCriteria}")
+        }
+        this.criteria.add(criteria)
+    }
 }
 
