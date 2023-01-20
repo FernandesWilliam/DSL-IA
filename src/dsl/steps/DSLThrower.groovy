@@ -1,6 +1,5 @@
 package dsl.steps
 
-import kernel.stringutils.StringUtilsJupyter
 
 interface DSLThrower {
 

@@ -2,7 +2,6 @@ package dsl.steps.preparation
 
 import dsl.ClosureExtractor
 import dsl.steps.DSLThrower
-import kernel.stringutils.StringUtilsJupyter
 
 class PreparationStep implements DSLThrower{
 

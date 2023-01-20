@@ -5,30 +5,38 @@ import dsl.steps.preparation.PreparationStep
 import dsl.steps.training.TrainingStep
 import dsl.steps.transformation.TransformationStep
 import kernel.comparaison.ComparisonGenerator
+
 import kernel.preparation.PreparationGenerator
-import kernel.stringutils.StringUtilsPython
+import kernel.stringutils.StringUtils
 import kernel.training.TrainingGenerator
 import kernel.transformation.TransformationGenerator
 
 class PythonGenerator implements Generator {
-    PreparationGenerator preparation;
-    TransformationGenerator transformation;
-    TrainingGenerator training;
-    ComparisonGenerator comparison;
+    PreparationStep preparation;
+    TransformationStep transformation;
+    TrainingStep training;
+    ComparisonStep comparison;
 
-    PythonGenerator(PreparationStep preparationStep,
-                    TransformationStep transformationStep,
-                    TrainingStep trainingStep,
-                    ComparisonStep comparisonStep) {
-        preparation = new PreparationGenerator(preparationStep, new StringUtilsPython())
-        transformation = new TransformationGenerator(transformationStep);
-        training = new TrainingGenerator(trainingStep)
-        comparison = new ComparisonGenerator(comparisonStep,trainingStep,transformationStep);
+    PythonGenerator(PreparationStep preparation, TransformationStep transformation, TrainingStep training, ComparisonStep comparison) {
+        this.preparation = preparation
+        this.transformation = transformation
+        this.training = training
+        this.comparison = comparison
     }
-
 
     @Override
     def generate(Object maps) {
-        return preparation.generate([:]) + StringUtils.lineFeed() + transformation.generate([:]) + training.generate([:]) + comparison.generate([:]);
+        String script =  StringUtils.startScript()+
+                StringUtils.comment("IMPORTS") +
+                StringUtils.generateCodeBlock(new ImportsGenerator()) +
+                StringUtils.comment("PREPROCESSING") +
+                (new PreparationGenerator(preparation)).generate([:]) +
+                StringUtils.comment("TRANSFORMATION") +
+                StringUtils.generateCodeBlock(new TransformationGenerator(transformation)) +
+                StringUtils.comment("TRAINING") +
+                (new TrainingGenerator(training)).generate([:]) +
+                StringUtils.comment("COMPARISON") +
+                StringUtils.generateCodeBlock(new ComparisonGenerator(comparison,training,transformation));
+        return StringUtils.endScript(script);
     }
 }

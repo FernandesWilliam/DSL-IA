@@ -3,7 +3,6 @@ package kernel.training
 import dsl.steps.training.classifier.knn.KnnClassifier
 import dsl.steps.training.functions.Function
 import kernel.Generator
-import kernel.stringutils.StringUtilsJupyter
 
 class KnnGenerator implements Generator {
     //  kfold stratified(2, true)

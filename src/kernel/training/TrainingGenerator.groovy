@@ -3,10 +3,8 @@ package kernel.training
 import dsl.steps.training.TrainingStep
 import dsl.steps.training.classifier.Classifier
 import dsl.steps.transformation.Mapper
-import dsl.steps.transformation.TransformationStep
 import kernel.Generator
-import kernel.PythonGenerator
-import kernel.notebook.CodeBlockGenerator
+import kernel.stringutils.StringUtils
 
 class TrainingGenerator implements Generator {
 
@@ -17,13 +15,13 @@ class TrainingGenerator implements Generator {
         stringBuilder = new StringBuilder()
 
         if (trainingStep.knnMapper) {
-            generateTrain(trainingStep.knnMapper,"('knn', KNeighborsClassifier())","KNN CLASSIFIER")
+            generateTrain(trainingStep.knnMapper,"('clf_knn', KNeighborsClassifier())","KNN CLASSIFIER")
         }
         if (trainingStep.gaussianMapper) {
-            generateTrain(trainingStep.gaussianMapper,"('gauss', GaussianClassifier())","GAUSSIAN CLASSIFIER")
+            generateTrain(trainingStep.gaussianMapper,"('clf_nb', GaussianNB())","GAUSSIAN CLASSIFIER")
         }
         if (trainingStep.randomForestMapper) {
-            generateTrain(trainingStep.randomForestMapper,"('randForest', RandomForestClassifier())","RANDOMFOREST CLASSIFIER")
+            generateTrain(trainingStep.randomForestMapper,"('clf', RandomForestClassifier())","RANDOMFOREST CLASSIFIER")
         }
 
     }
@@ -31,9 +29,9 @@ class TrainingGenerator implements Generator {
 
 
     def generateTrain(Mapper mapper, String tupleName, String commentType) {
-        stringBuilder.append(PythonGenerator.generateMarkDownBlock("$commentType"));
+        stringBuilder.append(StringUtils.comment("$commentType"));
         for (def entries in mapper.map) {
-            def generation =  PythonGenerator.generateCodeBlock(new ClassifierGenerator(entries.key as String, entries.value as Classifier, tupleName))
+            def generation = StringUtils.generateCodeBlock(new ClassifierGenerator(entries.key as String, entries.value as Classifier, tupleName))
             stringBuilder.append(generation)
         }
 

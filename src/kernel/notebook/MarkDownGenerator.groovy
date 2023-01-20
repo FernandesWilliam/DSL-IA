@@ -11,6 +11,6 @@ public class MarkDownBlockGenerator implements Generator {
 
     @Override
     public Object generate(Object maps) {
-        return "{\"cell_type\":\"markdown\",\"source\":\""+source+"\",\"metadata\":{}},";
+        return "{\"cell_type\":\"markdown\",\"metadata\": {},\"source\":\""+source+"\"},";
     }
 }

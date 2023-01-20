@@ -5,9 +5,9 @@ import dsl.steps.training.functions.Function
 
 class RandomForestDistributionParams extends DistributionParameters {
     def maxDepth = [];
-    Function samplesSplit;
+    Function minSamplesSplit;
     Function maxFeatures;
-    Function samplesLeaf;
+    Function minSamplesLeaf;
     String[] bootstrap;
     String[] criterion;
 
@@ -15,16 +15,13 @@ class RandomForestDistributionParams extends DistributionParameters {
         this.maxDepth = args;
     }
 
-    void samplesLeaf(funcObject) {
-        this.samplesLeaf = funcObject;
+    void minSamplesLeaf(funcObject) {
+        this.minSamplesLeaf = funcObject;
     }
 
 
     void bootstrap(Boolean... args) {
-
         this.bootstrap = args.collect { b -> b.toString().capitalize() };
-
-
     }
 
     void criterion(... criterion) {
@@ -35,8 +32,12 @@ class RandomForestDistributionParams extends DistributionParameters {
         this.maxFeatures = funcObject;
     }
 
-    void samplesSplit(funcObject) {
-        this.samplesSplit = funcObject;
+    void minSamplesSplit(funcObject) {
+        this.minSamplesSplit = funcObject;
+    }
+
+    def propertyMissing(String propertyName) {
+        propertyName
     }
 
 

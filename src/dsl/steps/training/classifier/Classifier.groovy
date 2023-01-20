@@ -5,7 +5,6 @@ import dsl.steps.training.functions.Function
 
 abstract class Classifier {
 
-
     def transformation;
     DistributionParameters distributionParameters;
     Function kfold;
@@ -23,6 +22,7 @@ abstract class Classifier {
     }
 
     void cv(cv) {
+        if (cv <= 1) throw new Exception("cv should be greater than 1")
         this.cv = cv;
     }
 
@@ -40,5 +40,9 @@ abstract class Classifier {
 
     void transformation(transformationName) {
         transformation = transformationName
+    }
+
+    String getPipelineName(){
+        return ""
     }
 }
