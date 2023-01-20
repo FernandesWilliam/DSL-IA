@@ -1,6 +1,8 @@
 package kernel.stringutils
 
 import kernel.Generator
+import kernel.notebook.CodeBlockGenerator
+import kernel.notebook.MarkDownBlockGenerator
 
 
 class StringUtils{

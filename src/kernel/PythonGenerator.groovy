@@ -5,7 +5,7 @@ import dsl.steps.preparation.PreparationStep
 import dsl.steps.training.TrainingStep
 import dsl.steps.transformation.TransformationStep
 import kernel.comparaison.ComparisonGenerator
-
+import kernel.imports.ImportsGenerator
 import kernel.preparation.PreparationGenerator
 import kernel.stringutils.StringUtils
 import kernel.training.TrainingGenerator
