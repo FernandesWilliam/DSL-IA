@@ -1,16 +1,19 @@
 package kernel.notebook;
 
-import kernel.Generator;
+import kernel.Generator
+import kernel.stringutils.StringUtils;
 
-public class MarkDownBlockGenerator implements Generator {
+class MarkDownBlockGenerator implements Generator {
     private final String source;
 
-    public MarkDownBlockGenerator(String source) {
+    MarkDownBlockGenerator(String source) {
         this.source = source;
     }
 
     @Override
     public Object generate(Object maps) {
-        return "{\"cell_type\":\"markdown\",\"metadata\": {},\"source\":\""+source+"\"},";
+        return "{\"cell_type\":\"markdown\"," +
+                "\"id\": \""+ StringUtils.generateId()+"\"," +
+                "\"metadata\": {},\"source\":\""+source+"\"},";
     }
 }

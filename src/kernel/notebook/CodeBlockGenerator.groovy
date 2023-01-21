@@ -1,22 +1,25 @@
 package kernel.notebook;
 
-import kernel.Generator;
+import kernel.Generator
+import kernel.stringutils.StringUtils;
 
-public class CodeBlockGenerator implements Generator {
+class CodeBlockGenerator implements Generator {
     private final int nb;
     private final String source;
 
-    public CodeBlockGenerator(int nb, String source) {
+    CodeBlockGenerator(int nb, String source) {
         this.nb = nb;
         this.source = source;
     }
 
+
     @Override
-    public Object generate(Object maps) {
+    Object generate(Object maps) {
         return "{\"cell_type\": \"code\"," +
                 "\"execution_count\": "+nb+"," +
+                "\"id\": \""+StringUtils.generateId()+"\"," +
                 "\"metadata\": {}," +
-                "\"output_type\": \"display_data\"," +
+                "\"outputs\": []," +
                 "\"source\": [\""+source+"\"]},";
     }
 }

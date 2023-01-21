@@ -25,23 +25,34 @@ class StringUtils{
     }
 
     static def startScript(){
-        if (notebook) return "{\n\"metadata\": {\n" +
-                "    \"language_info\": {\n" +
-                "      \"name\": \"\"\n" +
-                "    },\n" +
-                "    \"kernelspec\": {\n" +
-                "      \"name\": \"python\",\n" +
-                "      \"display_name\": \"Python (Pyodide)\",\n" +
-                "      \"language\": \"python\"\n" +
-                "    }\n" +
-                "  },\n" +
-                "  \"nbformat_minor\": 4,\n" +
-                "  \"nbformat\": 4,\"cells\": ["
+        if (notebook) return "{\n\"cells\": ["
         return ""
     }
 
     static def endScript(String script){
-        if (notebook) return script.substring(0, script.length()-1)+"\n]}"
+        if (notebook) return script.substring(0, script.length()-1)+"\n],\n" +
+                " \"metadata\": {\n" +
+                "  \"kernelspec\": {\n" +
+                "   \"display_name\": \"Python 3 (ipykernel)\",\n" +
+                "   \"language\": \"python\",\n" +
+                "   \"name\": \"python3\"\n" +
+                "  },\n" +
+                "  \"language_info\": {\n" +
+                "   \"codemirror_mode\": {\n" +
+                "    \"name\": \"ipython\",\n" +
+                "    \"version\": 3\n" +
+                "   },\n" +
+                "   \"file_extension\": \".py\",\n" +
+                "   \"mimetype\": \"text/x-python\",\n" +
+                "   \"name\": \"python\",\n" +
+                "   \"nbconvert_exporter\": \"python\",\n" +
+                "   \"pygments_lexer\": \"ipython3\",\n" +
+                "   \"version\": \"3.11.1\"\n" +
+                "  }\n" +
+                " },\n" +
+                " \"nbformat\": 4,\n" +
+                " \"nbformat_minor\": 5\n" +
+                "}"
         return script
     }
 
@@ -58,7 +69,8 @@ class StringUtils{
             nb ++;
             return "{\"cell_type\": \"code\"," +
                     "\"execution_count\": "+nb+"," +
-                    "\"output_type\": \"display_data\"," +
+                    "\"outputs\": []," +
+                    "\"id\": \""+generateId()+"\"," +
                     "\"metadata\": {}," +
                     "\"source\": [\""
         }
@@ -71,5 +83,11 @@ class StringUtils{
         }
         return "\n"
     }
+
+    static String generateId(){
+
+        return UUID.randomUUID().toString().substring(0,8);
+    }
+
 
 }
