@@ -25,10 +25,10 @@ class PreparationStep implements DSLThrower{
     void fetchTrain(String trainFilePath) {
         String errorMsg = "";
         if(filePath != null) {
-            errorMsg += "data file already exist above => "+filePath + StringUtilsJupyter.lineFeed();
+            errorMsg += "data file already exist above => "+filePath + StringUtils.lineFeed();
         }
         if(trainFilePath.isEmpty()) {
-            errorMsg += "data filePath is invalid [\""+trainFilePath+"\"]" + StringUtilsJupyter.lineFeed();
+            errorMsg += "data filePath is invalid [\""+trainFilePath+"\"]" + StringUtils.lineFeed();
         }
         if(!errorMsg.isEmpty()) {
             reject(errorMsg);
@@ -39,13 +39,13 @@ class PreparationStep implements DSLThrower{
     void fetchTest(String testFilePath) {
         String errorMsg = "";
         if(filePath != null) {
-            errorMsg += "data file already exist above => "+filePath + StringUtilsJupyter.lineFeed();
+            errorMsg += "data file already exist above => "+filePath + StringUtils.lineFeed();
         }
         if(trainPath == null) {
-            errorMsg += "train data file not defined before" + StringUtilsJupyter.lineFeed();
+            errorMsg += "train data file not defined before" + StringUtils.lineFeed();
         }
         if(testFilePath.isEmpty()) {
-            errorMsg += "data filePath is invalid [\""+testFilePath+"\"]" + StringUtilsJupyter.lineFeed();
+            errorMsg += "data filePath is invalid [\""+testFilePath+"\"]" + StringUtils.lineFeed();
         }
         if(!errorMsg.isEmpty()) {
             reject(errorMsg);
@@ -54,7 +54,7 @@ class PreparationStep implements DSLThrower{
     }
 
 
-    void generateDataset(dataSetClosure) {
+    void splitDataset(dataSetClosure) {
         if(filePath == null && trainPath != null){
             reject("generateDataset not needed, data already split into test and train dataset")
         }

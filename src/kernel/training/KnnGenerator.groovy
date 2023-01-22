@@ -49,16 +49,16 @@ class KnnGenerator implements Generator {
         def scoring = knnClassifier.scoring.collect { sc -> "\'$sc\':\'$sc\'" }.join(",")
         stringBuilder = new StringBuilder()
                 .append("$kfoldName=${knnClassifier.kfold.function}")
-                .append(StringUtilsJupyter.lineFeed(2))
+                .append(StringUtils.lineFeed(2))
                 .append("$pipeName= Pipeline([${transform.join(',')} ,('clf_knn', KNeighborsClassifier())])")
                 .append("$distributionName={${hyperParams.join(",")} }")
-                .append(StringUtilsJupyter.lineFeed(2))
+                .append(StringUtils.lineFeed(2))
                 .append("$rsName =RandomizedSearchCV(estimator= $pipeName," +
                         "param_distributions = $distributionName, " +
                         "cv =$kfoldName," +
                         "  verbose = 2, " +
                         "n_jobs = -1, " + "n_iter = 5)")
-                .append(StringUtilsJupyter.lineFeed(2))
+                .append(StringUtils.lineFeed(2))
                 .append("scores_$name = cross_validate(rsName, Xtrain ,y_train,cv=${knnClassifier.cv},scoring={${scoring}}) ")
     }
 

@@ -23,11 +23,11 @@ class Preprocessing implements DSLThrower {
         if (!validQ1 || !validQ3 || !validGap) {
             def msg = "";
             if (!validQ1)
-                msg += "The first quartile should be higher than 0" + StringUtilsJupyter.lineFeed()
+                msg += "The first quartile should be higher than 0" + StringUtils.lineFeed()
             if (!validQ3)
-                msg += "The last quartile should be lower than 1" + StringUtilsJupyter.lineFeed()
+                msg += "The last quartile should be lower than 1" + StringUtils.lineFeed()
             if (!validGap)
-                msg += " Should have q1 < q3" + StringUtilsJupyter.lineFeed()
+                msg += " Should have q1 < q3" + StringUtils.lineFeed()
 
             this.reject(msg)
         }
