@@ -15,14 +15,14 @@ class PreparationStep implements DSLThrower{
     int seed = 2394883;
 
 
-    void fetch(filePath) {
+    void fetchAll(filePath) {
         if(filePath.isEmpty()) {
             reject("data filePath is invalid [\""+filePath+"\"]")
         }
         this.filePath = filePath;
     }
 
-    void train(String trainFilePath) {
+    void fetchTrain(String trainFilePath) {
         String errorMsg = "";
         if(filePath != null) {
             errorMsg += "data file already exist above => "+filePath + StringUtilsJupyter.lineFeed();
@@ -36,7 +36,7 @@ class PreparationStep implements DSLThrower{
         this.trainPath = trainFilePath
     }
 
-    void test(String testFilePath) {
+    void fetchTest(String testFilePath) {
         String errorMsg = "";
         if(filePath != null) {
             errorMsg += "data file already exist above => "+filePath + StringUtilsJupyter.lineFeed();
