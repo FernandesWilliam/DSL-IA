@@ -1,6 +1,9 @@
 preparation {
     fetchAll "../input/digit-recognizer/testTrain.csv"
-
+    splitDataset {
+        training_size 70
+        seed 2394882
+    }
     preprocessing {
         rmNull
         rmOutliers 0.01, 0.8
@@ -28,16 +31,16 @@ training {
         cv 5
         kfold stratified(2, true)
         distributionParams {
-            smooth logspace(-9, 0, 5)
+            smoothing logspace(-9, 0, 5)
         }
         transformation t2
     }
 
     declare gaussian2 as gaussian {
-        cv 1
+        cv 2
         kfold stratified(2, true)
         distributionParams {
-            smooth logspace(-9, 0, 5)
+            smoothing logspace(-9, 0, 5)
         }
         transformation t3
     }
@@ -47,8 +50,8 @@ training {
         kfold stratified(2, true)
         cv 5
         distributionParams {
-            neighborsNumber randint(1, 11)
-            algo 'auto'
+            nNeighbors randint(1, 11)
+            algorithm 'auto'
         }
         transformation t2
     }
@@ -56,12 +59,12 @@ training {
         class_weight 'balanced'
         kfold stratified(2, true)
         distributionParams {
-            maxDepth 5, null
+            maxDepth 5, None
             bootstrap true, false
             criterion "gini", "entropy"
             maxFeatures randint(1, 11)
-            samplesSplit randint(2, 11)
-            samplesLeaf randint(1, 11)
+            minSamplesSplit randint(2, 11)
+            minSamplesLeaf randint(1, 11)
         }
         transformation t3
         cv 5
@@ -71,6 +74,6 @@ training {
 }
 
 comparison {
-    compare gaussian1, gaussian2,knn1 with accuracy weight 10 and time weight 3
+    compare gaussian1, gaussian2,knn1 with test_acc weight 10 and fit_time weight 3
 }
-export "wvfwev"
+notebook "wvfwev"
