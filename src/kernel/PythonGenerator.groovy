@@ -27,7 +27,7 @@ class PythonGenerator implements Generator {
 
     @Override
     def generate(Object maps) {
-        String script =  StringUtils.startScript(new GraphResultGenerator(preparation, training, transformation))+
+        String script =  StringUtils.startScript(new GraphResultGenerator(preparation, training, transformation, comparison))+
                 StringUtils.comment("IMPORTS") +
                 StringUtils.generateCodeBlock(new ImportsGenerator()) +
                 StringUtils.comment("PREPROCESSING") +
