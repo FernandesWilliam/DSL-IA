@@ -24,9 +24,3 @@ list.each {
     script.setBinding(binder)
     script.run()
 }
-
-def sout = new StringBuilder(), serr = new StringBuilder()
-def proc = 'python3 ../result/graph.py'.execute()
-proc.consumeProcessOutput(sout, serr)
-proc.waitForOrKill(1000)
-println "out> $sout\nerr> $serr"

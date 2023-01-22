@@ -35,7 +35,7 @@ class DataGraphGenerator {
             subGraph += "\td.edge('$testPath','test')\n"
             subGraph += preprocessingGraphGenerator.generate()
         }
-        subGraph += "\td.attr(label='Data preProcess')\n"
+        subGraph += "\td.attr(label='Data pre-processing')\n"
         return subGraph;
     }
 }

@@ -27,7 +27,7 @@ class PythonModel {
                 comparisonStep)
         file.text =  StringUtils.notebook ? JsonOutput.prettyPrint(generator.generate([:])) : generator.generate([:])
 
-        GraphResultGenerator graphGenerator =  new GraphResultGenerator(preparationStep, trainingStep, transformationStep)
+        GraphResultGenerator graphGenerator =  new GraphResultGenerator(preparationStep, trainingStep, transformationStep, comparisonStep)
         graphFile.text = graphGenerator.generate();
 
     }

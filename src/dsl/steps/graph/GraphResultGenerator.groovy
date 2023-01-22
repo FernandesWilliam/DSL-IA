@@ -1,5 +1,6 @@
 package dsl.steps.graph
 
+import dsl.steps.comparison.ComparisonStep
 import dsl.steps.preparation.PreparationStep
 import dsl.steps.training.TrainingStep
 
@@ -12,12 +13,15 @@ class GraphResultGenerator{
 
     TrainingGraphGenerator trainingGraphGenerator;
 
-    GraphResultGenerator(preparationStep, trainingStep, transformationStep){
+    ComparisonGraphGenerator comparisonGraphGenerator;
+
+    GraphResultGenerator(preparationStep, trainingStep, transformationStep, comparisonStep){
         this.preparationStep = preparationStep;
         this.trainingStep = trainingStep
         dataGenerator = new DataGraphGenerator(preparationStep)
         transformationGraphGenerator = new TransformationGraphGenerator(transformationStep)
         trainingGraphGenerator = new TrainingGraphGenerator(trainingStep, transformationStep.pipelines);
+        comparisonGraphGenerator = new ComparisonGraphGenerator(comparisonStep);
     }
 
     String generate(){
@@ -30,6 +34,7 @@ class GraphResultGenerator{
         graph += dataGenerator.generate();
         graph += transformationGraphGenerator.generate()
         graph += trainingGraphGenerator.generate();
+        graph += comparisonGraphGenerator.generate();
         graph += "g";
         return graph;
     }
