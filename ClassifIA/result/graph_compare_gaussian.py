@@ -1,13 +1,13 @@
 from graphviz import Digraph
 
-g = Digraph('G', filename='cluster.gv')
+g = Digraph('G')
 g.attr(rankdir='LR')
 g.node_attr.update(style='filled', fillcolor='white', shape='box')
 colors = ['green','red','blue','orange']
 with g.subgraph(name='cluster_0') as d:
 	d.attr(style='filled', fillcolor='antiquewhite1')
 	d.attr(rank='same')
-	d.edge('../input/digit-recognizer/testTrain.csv','data')
+	d.edge('../input/digit-recognizer/train.csv','data')
 	d.edge('data','rmNull')
 	d.edge('rmNull','rmOutliers')
 	d.edge('rmOutliers','PreProssDATA')
@@ -52,4 +52,6 @@ with g.subgraph(name='cluster_5') as report:
 	report.node('REPORT',shape='record', label='REPORT | { ARRAY RESULT | CLOUD DOT  }')
 	report.edge('compare','REPORT')
 	report.attr(label='Display Report')
+g
+
 g.view()

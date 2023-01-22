@@ -1,0 +1,123 @@
+<CODE> ::=  <PREPARATION>
+            <TRANSFORMATION>
+            <TRAINING>
+            <COMPARISON>
+            <EXPORTATION>
+
+<PREPARATION> ::= preparation {
+                    <DATA_FETCH>
+                    <SPLIT_DATASET>*
+                    <PREPROCESSING>
+                    }
+
+<DATA_FETCH> ::= <MERGED_DATA_FETCH> <SPLIT_DATA_FETCH>
+<MERGED_DATA_FETCH> ::= fetchAll "<FILE_PATH>"
+<SPLIT_DATA_FETCH>  ::= fetchTrain "<FILE_PATH>"
+fetchTest  "<FILE_PATH>"
+<FILE_PATH> ::= ((?:[^\/]*\/)*)(.*)
+
+<SPLIT_DATASET> ::= {
+    seed \d+
+    training_size \d+
+}
+
+<PREPROCESSING> ::= {
+                        <PREPROCESSING_ALGO>*
+                    }
+
+<PREPROCESSING_ALGO> ::= rmNull | rmOutliers <FLOAT>, <FLOAT>
+
+<FLOAT> ::= [+-]?([0-9]*[.])?[0-9]+
+
+<TRANSFORMATION> ::= {
+                <TRANSFORMATION_ALGO_DECLARATION>+
+                <PIPE>+
+                }
+
+
+<TRANSFORMATION_ALGO_DECLARATION> ::= declare <NAME> as <TRANSFORMATION_ALGO>
+<NAME> := [a-zA-Z]+[a-zA-Z0-9]*
+<TRANSFORMATION_ALGO> ::= <PCA_DECLARATION> | <MINMAX_DECLARATION> | <STANDARD_SCALER>
+
+<PCA_DECLARATION> ::= pca {
+n_components <FLOAT>
+}
+
+<BOOLEAN> ::= true|false
+
+<MINMAX_DECLARATION> ::= minmax {
+(feature_range\(\d+,\d+\))?
+(copy <BOOLEAN>)?
+(clip <BOOLEAN>)?
+}
+
+<STANDARD_SCALER> ::= standardScaler {
+(copy <BOOLEAN>)?
+(with_mean <BOOLEAN>)?
+(with_std <BOOLEAN>)?
+}
+
+<PIPE> ::= pipe <NAME> ::= [<TRANSFORMATIONS_NAMES>]
+<TRANSFORMATIONS_NAMES> ::= <TRANSFORMATIONS_NAMES>,<NAME> | <NAME>
+
+<TRAINING> ::= training {
+                    <TRAINING_ALGO_DECLARATION>*
+                }
+
+<TRAINING_ALGO_DECLARATION> ::= declare <NAME> as <TRAINING_ALGO>
+<TRAINING_ALGO> ::= <GAUSSIAN_DECLARATION> | <KNN_DECLARATION> | <RANDOM_FOREST_DECLARATION>
+
+
+
+<GAUSSIAN_DECLARATION>  ::= gaussian {
+<TRAINING_PARAMS>
+distributionParams {
+<GAUSSIAN_DISTRIBUTION_PARAMS>
+}
+<TRANSFORMATION_PIPE>
+}
+
+<GAUSSIAN_DISTRIBUTION_PARAMS> ::= smoothing logspace((+-)?\d+, \d+, \d+)
+<KNN_DECLARATION>  ::= gaussian {
+<TRAINING_PARAMS>
+distributionParams {
+<KNN_DISTRIBUTION_PARAMS>
+}
+<TRANSFORMATION_PIPE>
+}
+
+<KNN_DISTRIBUTION_PARAMS> ::= neighborsNumber randint(\d+, \d+)
+algo ‘auto’|‘ball_tree’|‘kd_tree’|‘brute’
+
+<RANDOM_FOREST_DECLARATION>  ::= gaussian {
+class_weight 'balanced'|'none'
+<TRAINING_PARAMS>
+distributionParams {
+<RANDOM_FOREST_DISTRIBUTION_PARAMS>
+}
+<TRANSFORMATION_PIPE>
+}
+
+<RANDOM_FOREST_DISTRIBUTION_PARAMS> ::= maxDepth \d+, null
+bootstrap <BOOLEAN>, <BOOLEAN>
+criterion "gini", "entropy"
+maxFeatures randint(\d+, \d+)
+samplesSplit randint(\d+, \d+)
+samplesLeaf randint(\d+, \d+)
+
+<TRAINING_PARAMS> ::=   cv \d+
+kfold stratified(\d+, <BOOLEAN>)
+
+<TRANSFORMATION_PIPE> ::= transformation <NAME>
+
+
+
+<COMPARISON> ::= comparison {
+    compare <CLASSIFIER_NAMES> with <CRITERIA> (and <CRITERIA>)?
+}
+
+<CRITERIA> ::= accuracy|time weight (+-)?\d+
+
+<CLASSIFIER_NAMES> ::= <CLASSIFIER_NAME>,<NAME> | <NAME>
+
+<EXPORTATION> ::= notebook|python <NAME>

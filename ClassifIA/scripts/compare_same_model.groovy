@@ -1,5 +1,5 @@
 preparation {
-    fetchAll "../input/digit-recognizer/testTrain.csv"
+    fetchAll "../input/digit-recognizer/train.csv"
     splitDataset {
         training_size 70
         seed 2394882
@@ -10,7 +10,6 @@ preparation {
     }
 }
 transformation {
-
     declare pca01 as pca {
         n_components 0.62
     }
@@ -18,7 +17,6 @@ transformation {
         n_components 0.41
     }
     declare minMax01 as minmax {}
-
     pipe t1: [minMax01, pca01]
 }
 training {
@@ -26,21 +24,19 @@ training {
         cv 5
         kfold stratified(5, true)
         distributionParams {
-            smoothing logspace(-5, 0, 4)
-        }
-        transformation t1
-    }
-
-    declare gaussian2 as gaussian {
-        cv 5
-        kfold stratified(5, true)
-        distributionParams {
             smoothing logspace(-9, 0, 5)
         }
         transformation t1
     }
+    declare gaussian2 as gaussian {
+        cv 5
+        kfold stratified(5, true)
+        distributionParams {
+            smoothing logspace(-2, 0, 5)
+        }
+        transformation t1
+    }
 }
-
 comparison {
     compare gaussian1, gaussian2 with test_acc weight 10 and fit_time weight 3
 }

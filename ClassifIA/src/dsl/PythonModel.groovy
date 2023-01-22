@@ -20,7 +20,7 @@ class PythonModel {
         StringUtils.notebook = mode.equalsIgnoreCase("notebook")
 
         def file = new File("../result/" + exportFilePath + (StringUtils.notebook ? ".ipynb":".py"))
-        def graphFile = new File("../result/graph.py")
+        def graphFile = new File("../result/graph_${exportFilePath}.py")
         def generator = new PythonGenerator(preparationStep,
                 transformationStep,
                 trainingStep,
@@ -29,6 +29,7 @@ class PythonModel {
 
         GraphResultGenerator graphGenerator =  new GraphResultGenerator(preparationStep, trainingStep, transformationStep, comparisonStep)
         graphFile.text = graphGenerator.generate();
+        graphFile.text += "\n\ng.view()\n"
 
     }
 
