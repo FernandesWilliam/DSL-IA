@@ -23,7 +23,6 @@ class TrainTestSplitterGenerator implements Generator {
                 .append(StringUtils.lineFeed())
                 .append("X_train, y_train = dataTrainSet.drop(['label'], axis = 1), dataTrainSet['label']")
                 .append(StringUtils.lineFeed())
-                .append("X_test, y_test = dataTestSet.drop(['label'], axis = 1), dataTestSet['label']")
     }
 
 
