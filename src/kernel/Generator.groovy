@@ -1,7 +1,7 @@
 package kernel
 
-interface Generator {
 
+interface Generator {
 
     def generate(maps);
 

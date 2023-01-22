@@ -40,8 +40,13 @@ abstract class SyntaxScript extends Script implements DSLThrower{
     }
 
 
-    def export(str) {
-        this.model.build(str);
+    def python(str) {
+        this.model.build(str, "python");
+
+    }
+
+    def notebook(str) {
+        this.model.build(str, "notebook");
 
     }
 

@@ -5,7 +5,7 @@ import dsl.steps.comparison.ComparisonStep
 import dsl.steps.training.TrainingStep
 import dsl.steps.transformation.TransformationStep
 import kernel.Generator
-import kernel.StringUtils
+import kernel.stringutils.StringUtils
 
 
 class ComparisonGenerator implements Generator, DSLThrower {
@@ -37,6 +37,7 @@ class ComparisonGenerator implements Generator, DSLThrower {
      * to generate scoring criteria object, scores where to store scores for each model and coefs for each criteria
      */
     def generateScoreNeededVariables() {
+
         comparisonBuilder.append("scoring = {'acc' : 'accuracy'}").append(StringUtils.lineFeed());
         comparisonBuilder.append("scores = dict()").append(StringUtils.lineFeed());
         for (int i = 0; i < criterias.size(); ++i) {
@@ -81,6 +82,7 @@ class ComparisonGenerator implements Generator, DSLThrower {
 
         comparisonBuilder.append("scores_${model} = cross_validate(rs_${model},X_train_${modelObject.transformation}, y_train, cv=${modelObject.cv}, scoring = scoring)").append(StringUtils.lineFeed())
         for (def criteria : criterias) {
+
             comparisonBuilder.append("${criteria}_${model} = np.mean(scores_${model}['${criteria}'])").append(StringUtils.lineFeed())
         }
         comparisonBuilder.append(StringUtils.lineFeed())
@@ -107,9 +109,10 @@ class ComparisonGenerator implements Generator, DSLThrower {
     }
 
     def generateWinningModel() {
+
         comparisonBuilder.append(StringUtils.lineFeed()).append("# WINNER MODEL").append(StringUtils.lineFeed())
         comparisonBuilder.append("winner_model = max(models_scores.items(), key=operator.itemgetter(1))[0]").append(StringUtils.lineFeed())
-        comparisonBuilder.append("print(\"winner model :\",winner_model)").append(StringUtils.lineFeed())
+        comparisonBuilder.append("print('winner model :',winner_model)").append(StringUtils.lineFeed())
     }
 
     def generateComparisonChart() {
@@ -153,21 +156,21 @@ class ComparisonGenerator implements Generator, DSLThrower {
                 .append("df = pd.DataFrame([")
 
         for (def criteria : criterias) {
-            comparisonBuilder.append("[\"${criteria}\", ")
+            comparisonBuilder.append("['${criteria}', ")
             for(def model: models)
                 comparisonBuilder.append("scores['${model}']['${criteria}'],")
             comparisonBuilder.setLength(comparisonBuilder.length() - 1)
             comparisonBuilder.append("],")
         }
-        comparisonBuilder.append("[\"total\", ")
+        comparisonBuilder.append("['total', ")
 
         for(def model: models)
             comparisonBuilder.append("models_scores['${model}'], ")
         comparisonBuilder.setLength(comparisonBuilder.length() - 1)
-        comparisonBuilder.append("]],columns=[\"metric\",")
+        comparisonBuilder.append("]],columns=['metric',")
 
         for(def model: models)
-            comparisonBuilder.append("\"${model}\",")
+            comparisonBuilder.append("'${model}',")
         comparisonBuilder.setLength(comparisonBuilder.length() - 1)
         comparisonBuilder.append("])").append(StringUtils.lineFeed())
                 .append("ax.table(cellText=df.values, colLabels=df.columns, loc='center')").append(StringUtils.lineFeed())

@@ -5,14 +5,15 @@ import dsl.steps.transformation.PcaMapper
 import dsl.steps.transformation.StandardScalerMapper
 import dsl.steps.transformation.TransformationStep
 import kernel.Generator
-import kernel.StringUtils
+import kernel.stringutils.StringUtils
 
 class TransformationGenerator implements Generator {
 
     StringBuilder stringBuilder;
 
     TransformationGenerator(TransformationStep transformationStep) {
-        stringBuilder = new StringBuilder("###### ---- TRANSFORMATION PHASE ---- ######").append(StringUtils.lineFeed(2));
+        stringBuilder = new StringBuilder("###### ---- TRANSFORMATION PHASE ---- ######").append(StringUtils.lineFeed())
+
         if (transformationStep.normalize != 0) {
             generateNormalize(transformationStep.normalize)
         }
@@ -33,7 +34,8 @@ class TransformationGenerator implements Generator {
     def generateNormalize(float normalizeValue) {
         stringBuilder.append("# Normalization TRANSFORMATION").append(StringUtils.lineFeed())
         stringBuilder.append("X_train = X_train / 255.").append(StringUtils.lineFeed())
-        stringBuilder.append("X_test = X_test / 255.").append(StringUtils.lineFeed())
+        stringBuilder.append("X_test = X_test / 255.").append(StringUtils.lineFeed(2))
+
     }
 
     def generateMinMax(MinMaxMapper minMaxMapper) {
@@ -41,26 +43,31 @@ class TransformationGenerator implements Generator {
         stringBuilder.append("# MinMax TRANSFORMATION").append(StringUtils.lineFeed())
         for (def entry in minMaxMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = MinMaxScaler(feature_range=(${entry.value.feature_range.join(',')}),clip=${entry.value.clip.toString().capitalize()},copy=${entry.value.copy.toString().capitalize()})")
-                    .append(StringUtils.lineFeed())
+                    .append(StringUtils.lineFeed(2))
+
 
         }
     }
 
     def generatePCA(PcaMapper pcaMapper) {
+
         if (pcaMapper.map.size() == 0) return
         stringBuilder.append("# PCA TRANSFORMATION").append(StringUtils.lineFeed())
         for (def entry in pcaMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = PCA(n_components=${entry.value.n_components})")
-                    .append(StringUtils.lineFeed())
+                    .append(StringUtils.lineFeed(2))
+
         }
     }
 
-    def generateStdScaler(StandardScalerMapper stdScalerMapper) {
+    def generateStdScaler(StandardScalerMapper stdScalerMapper){
         if (stdScalerMapper.map.size() == 0) return
-        stringBuilder.append("# STANDARDSCALER TRANSFORMATION").append(StringUtils.lineFeed());
+        stringBuilder.append("# STANDARDSCALER TRANSFORMATION").append(StringUtils.lineFeed())
+
         for (def entry in stdScalerMapper.map.entrySet()) {
             stringBuilder.append("${entry.key} = StandardScaler(copy=${entry.value.copy.toString().capitalize()}, with_mean=${entry.value.with_mean.toString().capitalize()}, with_std=${entry.value.with_std.toString().capitalize()})")
-                    .append(StringUtils.lineFeed())
+                    .append(StringUtils.lineFeed(2))
+
         }
     }
 
@@ -69,7 +76,6 @@ class TransformationGenerator implements Generator {
         if (pipelines.size() == 0) return
         stringBuilder.append(" ## ---- TRANSFORMATION PROCESSING ---- ##")
                 .append(StringUtils.lineFeed());
-
         def start = "X_train"
         def transformationName = start
         for (def i = 0; i < pipelines.size(); i++) {

@@ -1,5 +1,6 @@
 preparation {
-    fetch "../input/digit-recognizer/train.csv"
+    train "../input/digit-recognizer/train1.csv"
+    test "../input/digit-recognizer/test.csv"
 
     preprocessing {
         rmNull
@@ -28,16 +29,16 @@ training {
         cv 5
         kfold stratified(2, true)
         distributionParams {
-            smoothing logspace(-9, 0, 5)
+            smooth logspace(-9, 0, 5)
         }
         transformation t2
     }
 
     declare gaussian2 as gaussian {
-        cv 2
+        cv 1
         kfold stratified(2, true)
         distributionParams {
-            smoothing logspace(-9, 0, 5)
+            smooth logspace(-9, 0, 5)
         }
         transformation t3
     }
@@ -45,22 +46,23 @@ training {
     declare knn1 as knn {
         cv 5
         kfold stratified(2, true)
+        cv 5
         distributionParams {
-            nNeighbors randint(1, 11)
-            algorithm 'auto'
+            neighborsNumber randint(1, 11)
+            algo 'auto'
         }
-        transformation t1
+        transformation t2
     }
     declare rndForest1 as randomForest {
         class_weight 'balanced'
         kfold stratified(2, true)
         distributionParams {
-            maxDepth 5, None
+            maxDepth 5, null
             bootstrap true, false
             criterion "gini", "entropy"
             maxFeatures randint(1, 11)
-            minSamplesSplit randint(2, 11)
-            minSamplesLeaf randint(1, 11)
+            samplesSplit randint(2, 11)
+            samplesLeaf randint(1, 11)
         }
         transformation t3
         cv 5
@@ -70,6 +72,6 @@ training {
 }
 
 comparison {
-    compare gaussian1, gaussian2,knn1 with test_acc weight 10 and fit_time weight 3
+    compare gaussian1, gaussian2,knn1 with accuracy weight 10 and time weight 3
 }
 export "wvfwev"

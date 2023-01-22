@@ -1,7 +1,7 @@
 package kernel.imports;
 
 import kernel.Generator;
-import kernel.StringUtils;
+import kernel.stringutils.StringUtils;
 
 public class ImportsGenerator implements Generator {
     @Override

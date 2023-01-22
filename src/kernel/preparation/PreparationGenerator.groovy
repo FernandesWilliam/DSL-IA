@@ -3,7 +3,7 @@ package kernel.preparation
 
 import dsl.steps.preparation.PreparationStep
 import kernel.Generator
-import kernel.StringUtils
+import kernel.stringutils.StringUtils
 
 class PreparationGenerator implements Generator {
 
@@ -28,7 +28,11 @@ class PreparationGenerator implements Generator {
 
     @Override
     def generate(maps) {
-        return "###### ---- PREPARATION PHASE ---- ######" + StringUtils.lineFeed(2) +
-                importerGenerator.generate([:]) + StringUtils.lineFeed(2) + preprocessingGenerator.generate([:]) + trainTestSplitterGenerator.generate([:])
+        return StringUtils.comment("DATASET IMPORT")+
+                StringUtils.generateCodeBlock(importerGenerator) +
+                StringUtils.comment("PREPROCESSING")+
+                StringUtils.generateCodeBlock(preprocessingGenerator) +
+                StringUtils.comment("SPLITTING")+
+                StringUtils.generateCodeBlock(trainTestSplitterGenerator);
     }
 }

@@ -2,7 +2,7 @@ package kernel.preparation
 
 import dsl.steps.preparation.Preprocessing
 import kernel.Generator
-import kernel.StringUtils
+import kernel.stringutils.StringUtils;
 
 class PreprocessingGenerator implements Generator {
 
@@ -10,9 +10,10 @@ class PreprocessingGenerator implements Generator {
     Boolean mergedData;
 
     def preprocessingMethods = [
-            "rmNull"       : { dataset, v -> "${dataset}.dropna()" },
-            "rmOutliers": { dataset, v -> removeOutliers(dataset, v) },
-            "drop"          : { dataSet, columnName -> "${dataSet}.drop(['${columnName}'], axis = 1)"}
+
+            "rmNull"       : { dataset, v -> "${dataset}.dropna()"+ StringUtils.lineFeed()},
+            "rmOutliers"    : { dataset, v -> removeOutliers(dataset, v) },
+            "drop"          : { dataSet, columnName -> "${dataSet}.drop(['${columnName}'], axis = 1)"+StringUtils.lineFeed()}
     ]
 
     PreprocessingGenerator(Preprocessing preprocessing, Boolean mergedData) {
@@ -42,6 +43,7 @@ class PreprocessingGenerator implements Generator {
                     .append(StringUtils.lineFeed())
                     .append("$dataset[~(($dataset < (Q1 - 1.5 * IQR)) " +
                             "| ($dataset > (Q3 + 1.5 * IQR))).any(axis = 1)]")
+                    .append(StringUtils.lineFeed())
         } else {
             stringBuilder.append("cols= [${value[2].join(",")} ]")
                     .append(StringUtils.lineFeed())
@@ -53,6 +55,7 @@ class PreprocessingGenerator implements Generator {
                     .append(StringUtils.lineFeed())
                     .append("$dataset[~(($dataset[cols] < (Q1 - 1.5 * IQR)) " +
                             "| ($dataset[cols] > (Q3 + 1.5 * IQR))).any(axis = 1)]")
+                    .append(StringUtils.lineFeed())
         }
 
     }
@@ -68,13 +71,13 @@ class PreprocessingGenerator implements Generator {
             dataSetsName = ["dataTrainSet", "dataTestSet"]
         }
         preprocessingBuilder.append("###### ---- PREPROCESSING PHASE ---- ######")
-                .append(StringUtils.lineFeed(2))
+                .append(StringUtils.lineFeed())
         for (entry in entrySet) {
             preprocessingBuilder.append("## PREPROCESS : ${entry.key.toUpperCase()} ").append(StringUtils.lineFeed())
             for(dataSet in dataSetsName){
                 preprocessingBuilder
                         .append(preprocessingMethods[(String) entry.key](dataSet, entry.value))
-                        .append(StringUtils.lineFeed(2))
+                        .append(StringUtils.lineFeed())
             }
         }
     }

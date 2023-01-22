@@ -1,7 +1,8 @@
 package kernel.preparation
 
 import kernel.Generator
-import kernel.StringUtils
+import kernel.stringutils.StringUtils;
+
 
 class TrainTestSplitterGenerator implements Generator {
 
