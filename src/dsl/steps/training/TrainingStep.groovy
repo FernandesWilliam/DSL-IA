@@ -1,6 +1,6 @@
 package dsl.steps.training
 
-import dsl.ClosureExtractor
+
 import dsl.steps.Step
 import dsl.steps.training.classifier.gaussian.GaussianMapper
 import dsl.steps.training.classifier.knn.KnnMapper

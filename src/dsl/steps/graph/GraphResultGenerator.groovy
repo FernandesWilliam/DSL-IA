@@ -23,14 +23,14 @@ class GraphResultGenerator{
     String generate(){
         String graph ="from graphviz import Digraph\n" +
                 "\n" +
-                "g = Digraph('G', filename='cluster.gv')\n"+
+                "g = Digraph('G')\n"+
                 "g.attr(rankdir='LR')\n"+
                 "g.node_attr.update(style='filled', fillcolor='white', shape='box')\n"+
                 "colors = ['green','red','blue','orange']\n"
         graph += dataGenerator.generate();
         graph += transformationGraphGenerator.generate()
         graph += trainingGraphGenerator.generate();
-        graph += "g.view()";
+        graph += "g";
         return graph;
     }
 }

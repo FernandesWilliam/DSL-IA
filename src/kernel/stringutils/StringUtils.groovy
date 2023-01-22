@@ -1,5 +1,6 @@
 package kernel.stringutils
 
+import dsl.steps.graph.GraphResultGenerator
 import kernel.Generator
 import kernel.notebook.CodeBlockGenerator
 import kernel.notebook.MarkDownBlockGenerator
@@ -24,8 +25,9 @@ class StringUtils{
         return "## ${text}"
     }
 
-    static def startScript(){
-        if (notebook) return "{\n\"cells\": ["
+    static def startScript(GraphResultGenerator graph){
+        if (notebook) return "{\n\"cells\": [" +
+                                generateCodeBlock(graph.generate())
         return ""
     }
 
@@ -62,6 +64,13 @@ class StringUtils{
             return (new CodeBlockGenerator(nb, generator.generate([:]) as String).generate([:]));
         }
         return "\n"+generator.generate([:])
+    }
+
+    static String generateCodeBlock(String string){
+        if (notebook){
+            nb ++;
+            return (new CodeBlockGenerator(nb, string).generate([:]));
+        }
     }
 
     static String startCodeBlock(){

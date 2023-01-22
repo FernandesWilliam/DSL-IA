@@ -1,6 +1,7 @@
 package kernel
 
 import dsl.steps.comparison.ComparisonStep
+import dsl.steps.graph.GraphResultGenerator
 import dsl.steps.preparation.PreparationStep
 import dsl.steps.training.TrainingStep
 import dsl.steps.transformation.TransformationStep
@@ -26,7 +27,7 @@ class PythonGenerator implements Generator {
 
     @Override
     def generate(Object maps) {
-        String script =  StringUtils.startScript()+
+        String script =  StringUtils.startScript(new GraphResultGenerator(preparation, training, transformation))+
                 StringUtils.comment("IMPORTS") +
                 StringUtils.generateCodeBlock(new ImportsGenerator()) +
                 StringUtils.comment("PREPROCESSING") +

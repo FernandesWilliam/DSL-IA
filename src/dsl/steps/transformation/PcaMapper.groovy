@@ -1,7 +1,5 @@
 package dsl.steps.transformation
 
-import dsl.ClosureExtractor
-
 class PcaMapper extends Mapper {
 
     PcaMapper() {

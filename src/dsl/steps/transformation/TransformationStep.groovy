@@ -1,10 +1,8 @@
 package dsl.steps.transformation
 
-import dsl.ClosureExtractor
+
 import dsl.steps.DSLThrower
 import dsl.steps.Step
-
-import java.sql.Array
 
 class TransformationStep extends Step implements DSLThrower {
 

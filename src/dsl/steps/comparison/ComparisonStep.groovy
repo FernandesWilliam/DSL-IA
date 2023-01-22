@@ -1,7 +1,6 @@
 package dsl.steps.comparison
 
 import dsl.steps.DSLThrower
-import dsl.steps.training.TrainingStep
 
 class ComparisonStep implements DSLThrower{
 

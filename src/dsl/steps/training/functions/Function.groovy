@@ -1,7 +1,6 @@
 package dsl.steps.training.functions
 
 import dsl.steps.DSLThrower
-import kernel.stringutils.StringUtils
 
 import java.lang.reflect.Method
 
